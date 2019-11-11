@@ -21,6 +21,7 @@
 <script type="text/javascript" src="{{ base_url('assets/js/jquery-ui-timepicker-addon.js') }}"></script>
 <script>
 	shj.num_of_problems={{ problems|length }};
+	shj.static_analysis_count = 0;
 	shj.row='<tr><td>PID</td>\
 		<td><input type="text" name="name[]" class="sharif_input short" value="Exerc\u00edcio "/></td>\
 		<td><input type="text" name="score[]" class="sharif_input tiny2" value="100"/></td>\
@@ -35,7 +36,6 @@
 		<td><input type="checkbox" name="is_upload_only[]" class="check" value="PID"/></td>\
 		<td><input type="checkbox" name="static_analysis[]" class="check" value="PID"/><td><i class="fa fa-times-circle fa-lg color1 delete_problem pointer"></i></td></td>\
 		</tr>';
-	shj.static_analysis_count = 0;
 	$(document).ready(function(){
 		$("#add").click(function(){
 			$('#problems_table>tbody').append(shj.row.replace(/PID/g, (shj.num_of_problems+1)));
@@ -54,6 +54,7 @@
 			});
 			shj.num_of_problems--;
 			$("#nop").val(shj.num_of_problems);
+			console.log(shj.num_of_problems);
 		});
 		$('#start_time').datetimepicker({
 			timeFormat: 'HH:mm:ss'
@@ -61,7 +62,7 @@
 		$('#finish_time').datetimepicker({
 			timeFormat: 'HH:mm:ss'
 		});
-		$("#all_classes").click(function(){
+		$('#all_classes').click(function(){
 			if($(this).is(":checked")){
 				$(".possible_classes").prop("selected","selected");
 				$("#classes").prop("readonly", true);
@@ -70,26 +71,36 @@
 				$("#classes").prop("readonly", false);
 			}
 		});
-		$("#static_analysis").click(function(){
-			if($(this).is(":checked")){
-				shj.static_analysis_count++;
-			}else{
-				shj.static_analysis_count--;
-			};
-			if(shj.static_analysis_count == 0){
-				$('#static_analysis_div').fadeOut('fast');
-			}else{
-				$('#static_analysis_div').fadeIn('fast');
-			}
+
+		$('#all_classes').click(function(){
+			$('#problems_table>tbody').append(shj.row.replace(/PID/g, (shj.num_of_problems+1)));
+			shj.num_of_problems++;
+			$("#nop").val(shj.num_of_problems);
 		});
+
+		
 		$(document).ready(function(){
-			if($("#static_analysis").is(":checked")){
+			if($('#static_analysis').is(':checked')){
 				shj.static_analysis_count++;
 				$('#static_analysis_div').fadeIn('fast');
-			}
+			};
 		});
 		
 	});
+
+	$(document).change(function(){
+		var checks = document.querySelectorAll("input[name='static_analysis[]'][type='checkbox']:checked"),
+        	i = checks.length;
+		
+		if(i > 0){
+			$('#static_analysis_div').fadeIn('fast');
+		} else {
+			$('#static_analysis_div').fadeOut('fast');
+		}
+	})
+
+
+
 </script>
 
 	
@@ -323,21 +334,20 @@
 </div>
 
 <script>
-function calc() {
-	let sum_weight = parseInt(document.getElementById('public_methods').value) + parseInt(document.getElementById('auxiliary_classes').value) + parseInt(document.getElementById('unnecessary_attributes').value) + parseInt(document.getElementById('lower_camel_case').value) + parseInt(document.getElementById('code_quality').value) + parseInt(document.getElementById('duplicated_code').value); 
-	document.getElementById('public_methods_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('public_methods').value)).toFixed(2);
-	document.getElementById('auxiliary_classes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('auxiliary_classes').value)).toFixed(2);
-	document.getElementById('unnecessary_attributes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('unnecessary_attributes').value)).toFixed(2);
-	document.getElementById('lower_camel_case_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('lower_camel_case').value)).toFixed(2);
-	document.getElementById('code_quality_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('code_quality').value)).toFixed(2);
-	document.getElementById('duplicated_code_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('duplicated_code').value)).toFixed(2);
-	document.getElementById('public_methods_each_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_each').value)).toFixed(2);
-	document.getElementById('auxiliary_classes_each_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_each').value)).toFixed(2);
-	document.getElementById('lower_camel_case_each_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_each').value)).toFixed(2);
-	document.getElementById('unnecessary_attributes_each_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_each').value)).toFixed(2);
-	document.getElementById('code_quality_each_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_each').value)).toFixed(2);
-}
-
+	function calc() {
+		let sum_weight = parseInt(document.getElementById('public_methods').value) + parseInt(document.getElementById('auxiliary_classes').value) + parseInt(document.getElementById('unnecessary_attributes').value) + parseInt(document.getElementById('lower_camel_case').value) + parseInt(document.getElementById('code_quality').value) + parseInt(document.getElementById('duplicated_code').value); 
+		document.getElementById('public_methods_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('public_methods').value)).toFixed(2);
+		document.getElementById('auxiliary_classes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('auxiliary_classes').value)).toFixed(2);
+		document.getElementById('unnecessary_attributes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('unnecessary_attributes').value)).toFixed(2);
+		document.getElementById('lower_camel_case_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('lower_camel_case').value)).toFixed(2);
+		document.getElementById('code_quality_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('code_quality').value)).toFixed(2);
+		document.getElementById('duplicated_code_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('duplicated_code').value)).toFixed(2);
+		document.getElementById('public_methods_each_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_each').value)).toFixed(2);
+		document.getElementById('auxiliary_classes_each_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_each').value)).toFixed(2);
+		document.getElementById('lower_camel_case_each_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_each').value)).toFixed(2);
+		document.getElementById('unnecessary_attributes_each_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_each').value)).toFixed(2);
+		document.getElementById('code_quality_each_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_each').value)).toFixed(2);
+	};
 </script>
 
 <p class="input_p">

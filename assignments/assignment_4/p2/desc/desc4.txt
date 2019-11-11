@@ -1,0 +1,1 @@
+Teste distanciaEntrePontos Pontos no mesmo quadrante

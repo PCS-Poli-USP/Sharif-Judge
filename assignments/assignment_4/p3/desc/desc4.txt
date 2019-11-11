@@ -1,0 +1,1 @@
+Teste distanciaDoPontoDeMenorOrdenadaAOrigem Primeiro Ponto Do Array

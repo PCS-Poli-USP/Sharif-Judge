@@ -1,0 +1,1 @@
+Teste distanciaEntrePontos Ponto na origem
