@@ -57,6 +57,7 @@ class Queueprocess extends CI_Controller
 			$assignment = $queue_item['assignment'];
 			$assignment_info = $this->assignment_model->assignment_info($assignment);
 			$problem = $this->assignment_model->problem_info($assignment, $queue_item['problem']);
+			$static_analysis_info = $this->assignment_model->static_analysis_info($assignment);
 			$type = $queue_item['type'];  // $type can be 'judge' or 'rejudge'
 
 			$submission = $this->submit_model->get_submission($username, $assignment, $problem['id'], $submit_id);
@@ -99,6 +100,22 @@ class Queueprocess extends CI_Controller
 			$memory_limit = $problem['memory_limit'];
 			$diff_cmd = $problem['diff_cmd'];
 			$diff_arg = $problem['diff_arg'];
+
+			$static_analysis = $problem['static_analysis'];
+
+			$public_methods = $static_analysis_info['public_methods'];
+			$public_methods_each = $static_analysis_info['public_methods_each'];
+			$auxiliary_classes = $static_analysis_info['auxiliary_classes'];
+			$auxiliary_classes_each = $static_analysis_info['auxiliary_classes_each'];
+			$unnecessary_attributes = $static_analysis_info['unnecessary_attributes'];
+			$unnecessary_attributes_each = $static_analysis_info['unnecessary_attributes_each'];
+			$lower_camel_case = $static_analysis_info['lower_camel_case'];
+			$lower_camel_case_each = $static_analysis_info['lower_camel_case_each'];
+			$code_quality = $static_analysis_info['code_quality'];
+			$code_quality_each = $static_analysis_info['code_quality_each'];
+			$duplicated_code = $static_analysis_info['duplicated_code'];
+			$static_analysis_weight = $static_analysis_info['static_analysis_weight'];
+
 			$output_size_limit = $this->settings_model->get_setting('output_size_limit') * 1024;
 
 			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6";

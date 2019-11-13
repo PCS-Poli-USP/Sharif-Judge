@@ -363,7 +363,7 @@ class Assignment_model extends CI_Model
 	 * @param $assignment_id
 	 * @return mixed
 	 */
-	public function all_static_analysis($assignment_id)
+	public function static_analysis_info($assignment_id)
 	{
 		$static_analysis = $this->db->order_by('assignment')->get_where('static_analysis', array('assignment'=>$assignment_id))->result_array();
 		return $static_analysis[0];
