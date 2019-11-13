@@ -88,6 +88,11 @@ class Assignment_model extends CI_Model
 		//First remove all previous problems
 		$this->db->delete('problems', array('assignment'=>$id));
 
+
+
+		//And remove all previous static analysis too
+		$this->db->delete('static_analysis', array('assignment'=>$id));
+
 		//Now add new problems:
 		$names = $this->input->post('name');
 		$scores = $this->input->post('score');
@@ -145,13 +150,9 @@ class Assignment_model extends CI_Model
 				'static_analysis' => in_array($i,$sa)?1:0
 			);
 			$this->db->insert('problems', $problem);
-
-			//First remove all previous static analysis
-			$this->db->delete('static_analysis', array('assignment'=>$id));
-
+			
+			/* **** Adding static analysis to "static_analysis" table **** */
 			if (in_array($i,$sa)){
-				/* **** Adding static analysis to "static_analysis" table **** */
-
 				//Now add new static analysis:
 				$static_analysis = array(
 					'assignment' => $id,
