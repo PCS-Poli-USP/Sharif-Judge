@@ -72,10 +72,8 @@ class Queueprocess extends CI_Controller
 			$problemdir = $assignments_dir."/assignment_$assignment/p".$problem['id'];
 			$userdir = "$problemdir/$username";
 			//$the_file = "$userdir/$raw_filename.$file_extension";
-			$cpp_parser = "$assignments_dir/../tester/Autocheck/CppParser.py";
-			//$pathCode = "$assignments_dir/PATH_CODE";
-			//$pathTemplates = "$assignments_dir/PATH_TEMPLATES";
-			//$pathResult = "$assignments_dir/PATH_RESULT";
+			$cpp_parser = "$tester_path/Autocheck/CppParser.py";
+			$pathTemplates = "$problemdir/inject/static_analysis_template";
 
 			$op1 = $this->settings_model->get_setting('enable_log');
 			$op2 = $this->settings_model->get_setting('enable_easysandbox');
@@ -122,7 +120,7 @@ class Queueprocess extends CI_Controller
 
 			$output_size_limit = $this->settings_model->get_setting('output_size_limit') * 1024;
 
-			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6";
+			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $cpp_parser $pathTemplates $static_analysis $public_methods $public_methods_each $auxiliary_classes $auxiliary_classes_each $unnecessary_attributes $unnecessary_attributes_each $lower_camel_case $lower_camel_case_each $code_quality $code_quality $code_quality_each $duplicated_code $static_analysis_weight";
 
 			file_put_contents($userdir.'/log', $cmd);
 

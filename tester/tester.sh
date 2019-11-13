@@ -118,6 +118,40 @@ if [ ${17} = "1" ]; then
 else
 	DISPLAY_JAVA_EXCEPTION_ON=false
 fi
+# static analysis script file
+CPPARSER=${18}
+# static analysis templates directory
+TEMPLATEPATH=${19}
+# enable/disable static analysis
+if [ ${20} = '1' ]; then
+	STATIC_ANALYSIS=true
+else
+	STATIC_ANALYSIS=false
+fi
+# pucblic methods error weight
+PUBLIC_METHODS=${21}
+# each pucblic methods error discount
+EACH_PUBLIC_METHODS=${22}
+# auxiliary classes error weight
+AUXILIARY_CLASSES=${23}
+# each auxiliary classes error discount
+EACH_AUXILIARY_CLASSES=${24}
+# unnecessary attributes error weight
+UNNECESSARY_ATTRIBUTES=${25}
+# each unnecessary attributes error discount
+EACH_UNECESSARY_ATTRIBUTES=${26}
+# lower camel case error weight
+LOWER_CAMEL_CASE=${27}
+# each lower camel case error discount
+EACH_LOWER_CAMEL_CASE=${28}
+#  code quality error weight
+CODE_QUALITY=${29}
+# each code quality error discount
+EACH_CODE_QUALITY=${30}
+# duplicated code error weight
+DUPLICATED_CODE=${31}
+# static analysis total weight
+STATIC_ANALYSIS_WEIGHT=${32}
 
 # DIFFOPTION can also be "ignore" or "exact".
 # ignore: In this case, before diff command, all newlines and whitespaces will be removed from both files
@@ -151,6 +185,24 @@ function shj_finish
 #################### Initialization #####################
 
 shj_log "Starting tester..."
+
+shj_log = "lala: $PROBLEMPATH"
+shj_log = "lala: $CPPARSER"
+shj_log = "lala: $TEMPLATEPATH"
+shj_log = "lala: $STATIC_ANALYSIS" 
+shj_log = "lala: $PUBLIC_METHODS"
+shj_log = "lala: $EACH_PUBLIC_METHODS"
+shj_log = "lala: $AUXILIARY_CLASSES"
+shj_log = "lala: $EACH_AUXILIARY_CLASSES"
+shj_log = "lala: $UNNECESSARY_ATTRIBUTES"
+shj_log = "lala: $EACH_UNECESSARY_ATTRIBUTES"
+shj_log = "lala: $LOWER_CAMEL_CASE"
+shj_log = "lala: $EACH_LOWER_CAMEL_CASE"
+shj_log = "lala: $CODE_QUALITY"
+shj_log = "lala: $EACH_CODE_QUALITY"
+shj_log = "lala: $DUPLICATED_CODE"
+shj_log = "lala: $STATIC_ANALYSIS_WEIGHT"
+
 
 # detecting existence of perl
 PERL_EXISTS=true

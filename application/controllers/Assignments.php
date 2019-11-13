@@ -379,7 +379,7 @@ class Assignments extends CI_Controller
 			$have_sa = 0;
 			foreach ($data['problems'] as $row) {
 				if ($row['static_analysis'] == 1){ 
-					$data['static_analysis'] = $this->assignment_model->all_static_analysis($this->edit_assignment);
+					$data['static_analysis'] = $this->assignment_model->static_analysis_info($this->edit_assignment);
 					$have_sa = 1;
 				};
 			};

@@ -1,0 +1,42 @@
+cd /var/www/html/Sharif-Judge/tester;
+./tester.sh /var/www/html/Sharif-Judge/assignments/assignment_16/p1 'bruno' 'Aula01Ex02' 'Aula01Ex02-5' cpp 0.5 1 50000 1048576 diff -bB 1 1 0 0 0 0 /var/www/html/Sharif-Judge/tester/Autocheck/CppParser.py /var/www/html/Sharif-Judge/assignments/assignment_16/p1/inject/static_analysis_template 1 1 10 1 10 1 10 1 10 1 1 10 1 30
+Starting tester...
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+= lala: 
+qua nov 13 12:23:53 -03 2019
+Language: cpp
+Time Limit: 0.5 s
+Memory Limit: 50000 kB
+Output size limit: 1048576 bytes
+EasySandbox: true
+C/C++ Shield: false
+Compiling as cpp
+Enabling EasySandbox
+EasySandbox is not built. Disabling EasySandbox...
+Compiled. Exit Code=1  Execution Time: 1257 ms
+Compile Error
+/tmp/ccPnbQkI.o: In function `Teste_quadranteDoPonto_primeiroQuadranteTeste::testar()':
+TesteAula01Ex01.cpp:(.text._ZN45Teste_quadranteDoPonto_primeiroQuadranteTeste6testarEv[_ZN45Teste_quadranteDoPonto_primeiroQuadranteTeste6testarEv]+0x11): undefined reference to `quadranteDoPonto(double, double)'
+/tmp/ccPnbQkI.o: In function `Teste_quadranteDoPonto_segundoQuadranteTeste::testar()':
+TesteAula01Ex01.cpp:(.text._ZN44Teste_quadranteDoPonto_segundoQuadranteTeste6testarEv[_ZN44Teste_quadranteDoPonto_segundoQuadranteTeste6testarEv]+0x15): undefined reference to `quadranteDoPonto(double, double)'
+/tmp/ccPnbQkI.o: In function `Teste_quadranteDoPonto_terceiroQuadranteTeste::testar()':
+TesteAula01Ex01.cpp:(.text._ZN45Teste_quadranteDoPonto_terceiroQuadranteTeste6testarEv[_ZN45Teste_quadranteDoPonto_terceiroQuadranteTeste6testarEv]+0x11): undefined reference to `quadranteDoPonto(double, double)'
+/tmp/ccPnbQkI.o: In function `Teste_quadranteDoPonto_quartoQuadranteTeste::testar()':
+TesteAula01Ex01.cpp:(.text._ZN43Teste_quadranteDoPonto_quartoQuadranteTeste6testarEv[_ZN43Teste_quadranteDoPonto_quartoQuadranteTeste6testarEv]+0x15): undefined reference to `quadranteDoPonto(double, double)'
+/tmp/ccPnbQkI.o: In function `Teste_quadranteDoPonto_EixoXTeste::testar()':
+TesteAula01Ex01.cpp:(.text._ZN33Teste_quadranteDoPonto_EixoXTeste6testarEv[_ZN33Teste_quadranteDoPonto_EixoXTeste6testarEv]+0x11): undefined reference to `quadranteDoPonto(double, double)'
+
+Total Execution Time: 1379 ms
