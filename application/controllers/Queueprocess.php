@@ -72,6 +72,10 @@ class Queueprocess extends CI_Controller
 			$problemdir = $assignments_dir."/assignment_$assignment/p".$problem['id'];
 			$userdir = "$problemdir/$username";
 			//$the_file = "$userdir/$raw_filename.$file_extension";
+			$cpp_parser = "$assignments_dir/../tester/Autocheck/CppParser.py";
+			//$pathCode = "$assignments_dir/PATH_CODE";
+			//$pathTemplates = "$assignments_dir/PATH_TEMPLATES";
+			//$pathResult = "$assignments_dir/PATH_RESULT";
 
 			$op1 = $this->settings_model->get_setting('enable_log');
 			$op2 = $this->settings_model->get_setting('enable_easysandbox');
