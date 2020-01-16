@@ -119,9 +119,9 @@ else
 	DISPLAY_JAVA_EXCEPTION_ON=false
 fi
 # static analysis script file
-CPPARSER=${18}
+STATIC_ANALYSIS_PATH=${18}
 # static analysis templates directory
-TEMPLATEPATH=${19}
+STATIC_ANALYSIS_TEMPLATES=${19}
 # enable/disable static analysis
 if [ ${20} = '1' ]; then
 	STATIC_ANALYSIS=true
@@ -186,23 +186,7 @@ function shj_finish
 
 shj_log "Starting tester..."
 
-shj_log = "lala: $PROBLEMPATH"
-shj_log = "lala: $CPPARSER"
-shj_log = "lala: $TEMPLATEPATH"
-shj_log = "lala: $STATIC_ANALYSIS" 
-shj_log = "lala: $PUBLIC_METHODS"
-shj_log = "lala: $EACH_PUBLIC_METHODS"
-shj_log = "lala: $AUXILIARY_CLASSES"
-shj_log = "lala: $EACH_AUXILIARY_CLASSES"
-shj_log = "lala: $UNNECESSARY_ATTRIBUTES"
-shj_log = "lala: $EACH_UNECESSARY_ATTRIBUTES"
-shj_log = "lala: $LOWER_CAMEL_CASE"
-shj_log = "lala: $EACH_LOWER_CAMEL_CASE"
-shj_log = "lala: $CODE_QUALITY"
-shj_log = "lala: $EACH_CODE_QUALITY"
-shj_log = "lala: $DUPLICATED_CODE"
-shj_log = "lala: $STATIC_ANALYSIS_WEIGHT"
-
+shj_log "Static Analysis: $STATIC_ANALYSIS"
 
 # detecting existence of perl
 PERL_EXISTS=true
@@ -692,6 +676,18 @@ for((i=1;i<=TST;i++)); do
 		echo "<span class=\"shj_r\">WRONG</span>" >>$PROBLEMPATH/$UN/result.html
 	fi
 done
+
+if $STATIC_ANALYSIS; then
+	shj_log "\n\n\n=== STATIC ANALYSIS TEST ==="
+
+	cd $STATIC_ANALYSIS_PATH
+	./sudo python3 CppParser.py $PROBLEMPATH/$UN $PROBLEMPATH/inject $PROBLEMPATH/$UN
+	
+	shj_log "End of Static Analysis Test\n\n\n"
+else	
+	shj_loh "\n\n\n=== NO STATIC ANALYSIS TEST ===\n\n\n"
+fi
+
 
 # Converte resultado para UTF-8 se houver caracteres especiais
 if [ "$(file -ib $PROBLEMPATH/$UN/result.html)" == "text/plain; charset=iso-8859-1" ]; then

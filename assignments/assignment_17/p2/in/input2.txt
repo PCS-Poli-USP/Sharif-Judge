@@ -1,0 +1,1 @@
+Teste_distanciaEntrePontos_Pontos_em_quadrantes_diferentes

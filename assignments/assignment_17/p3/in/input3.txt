@@ -1,0 +1,1 @@
+Teste_distanciaDoPontoDeMenorOrdenadaAOrigem_Ponto_de_ordenada_negativo

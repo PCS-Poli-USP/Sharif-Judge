@@ -1,0 +1,1 @@
+Teste_distanciaDoPontoDeMenorOrdenadaAOrigem_Ultimo_Ponto_Do_Array
