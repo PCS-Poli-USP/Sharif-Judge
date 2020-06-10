@@ -1,1 +1,0 @@
-Teste distanciaDoPontoDeMenorOrdenadaAOrigem Ponto de ordenada negativo

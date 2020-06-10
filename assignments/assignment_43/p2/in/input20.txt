@@ -1,1 +1,0 @@
-SerieTemporal$_adicionar_com_um_parametro_valores_seguidos

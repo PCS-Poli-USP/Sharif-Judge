@@ -1,1 +1,0 @@
-EixoDinamico: getMinimo Serie vazia

@@ -1,1 +1,0 @@
-EixoDinamico$_getMaximo_Serie_vazia

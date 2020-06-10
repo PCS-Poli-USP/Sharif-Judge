@@ -1,1 +1,0 @@
-SerieTemporal: construtor e destrutor

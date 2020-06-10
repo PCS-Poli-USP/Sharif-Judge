@@ -1,1 +1,0 @@
-EixoDinamico$_construtor_e_destrutor

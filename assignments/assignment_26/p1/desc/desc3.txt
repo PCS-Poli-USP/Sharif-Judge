@@ -1,1 +1,0 @@
-Grafico nao tem superclasse

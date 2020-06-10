@@ -1,1 +1,0 @@
-Grafico_nao_tem_superclasse

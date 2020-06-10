@@ -1,1 +1,0 @@
-Serie$_adicionar_e_getPosicao_com_posicoes_validas

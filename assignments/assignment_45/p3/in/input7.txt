@@ -1,1 +1,0 @@
-EixoDinamico$_getMaximo_minimo_e_maximo_iguais

@@ -1,1 +1,0 @@
-SerieTemporal$_uso_dos_dois_adicionar_com_pontos_proximos_no_de_um_parametro

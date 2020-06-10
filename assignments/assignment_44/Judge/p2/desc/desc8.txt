@@ -1,1 +1,0 @@
-Serie: adicionar e getPosicao com posicoes validas

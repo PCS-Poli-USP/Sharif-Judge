@@ -1,1 +1,0 @@
-Serie$_casos_que_getPosicao_retorna_NULL

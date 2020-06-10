@@ -1,1 +1,0 @@
-SerieTemporal: metodo adicionar foi redefinido

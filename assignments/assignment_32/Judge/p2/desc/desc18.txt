@@ -1,1 +1,0 @@
-SerieTemporal: adicionar com dois parametros valores seguidos
