@@ -1,1 +1,0 @@
-Teste_distanciaEntrePontos_Pontos_no_mesmo_quadrante

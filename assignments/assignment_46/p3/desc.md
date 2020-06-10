@@ -1,0 +1,1 @@
+﻿Verifica as classes EixoDinamico e Grafico, usando gabaritos de Serie, Ponto e Eixo (fazendo uma nova classe filha de Eixo).

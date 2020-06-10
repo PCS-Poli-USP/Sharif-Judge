@@ -1,0 +1,22 @@
+class Eixo
+
+public:
+setTitulo()
+setUnidade()
+setNumeroDeDivisoes()
+setEscalaMinima()
+setEscalaMaxima()
+getTitulo()
+getUnidade()
+getNumeroDeDivisoes()
+getIncrementoDaDivisao()
+getEscalaMinima()
+getEscalaMaxima()
+
+protected:
+ALL
+ALL()
+
+private:
+ALL
+ALL()

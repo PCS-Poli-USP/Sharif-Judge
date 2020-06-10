@@ -1,0 +1,14 @@
+class InterfaceSerial
+
+public:
+inicializar()
+registrar()
+atualizar()
+
+protected:
+ALL
+ALL()
+
+private:
+ALL
+ALL()

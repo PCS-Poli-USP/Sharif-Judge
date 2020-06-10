@@ -1,0 +1,21 @@
+cd /var/www/html/Sharif-Judge/tester;
+./tester.sh /var/www/html/Sharif-Judge/assignments/assignment_49/p1 'bruno' 'Aula01Ex01' 'Aula01Ex01-1' cpp 0.5 1 50000 1048576 diff -bB 1 1 0 0 0 0 /var/www/html/Sharif-Judge/tester/static_analysis 1 1 10 1 10 1 10 1 10 1 10 1 30
+Starting tester...
+Static Analysis: true
+dom jun  7 22:54:31 -03 2020
+Language: cpp
+Time Limit: 0.5 s
+Memory Limit: 50000 kB
+Output size limit: 1048576 bytes
+EasySandbox: true
+C/C++ Shield: false
+Compiling as cpp
+Enabling EasySandbox
+EasySandbox is not built. Disabling EasySandbox...
+Compiled. Exit Code=1  Execution Time: 2547 ms
+Compile Error
+/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o: In function `_start':
+(.text+0x20): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+
+Total Execution Time: 2694 ms

@@ -1,0 +1,1 @@
+SerieTemporal$_metodo_adicionar_foi_redefinido

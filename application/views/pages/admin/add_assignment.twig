@@ -277,7 +277,7 @@
 <table id="static_analysis_table">
 	<thead>
 	<tr>
-		<th rowspan="2">Static Analysis<br>Discount</th>
+		<th rowspan="2">Static Analysis<br>Discount (<a target="_blank" id='sa-discount-tooltip'><label for='sa-discount-tooltip' title='Maximum discount from Static Analysis based on Weight'>?</label> </a>)</th>
 		<th colspan="2" style="border-bottom: 1px solid #BDBDBD">Public Methods</th>
 		<th colspan="2" style="border-bottom: 1px solid #BDBDBD">Auxiliary Classes</th>
 		<th colspan="2" style="border-bottom: 1px solid #BDBDBD">Unnecessary Attributes</th>
@@ -298,15 +298,15 @@
 		<tr>
 			<td><input type="text" name="static_analysis_weight" id="static_analysis_weight" onchange="calc()" class="sharif_input tiny3" value="{{ static_analysis.static_analysis_weight }}"/></td>
 			<td><input type="text" name="public_methods" id="public_methods" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.public_methods }}"/></td>
-			<td><input type="text" name="public_methods_each" id="public_methods_each" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.public_methods_each }}"/></td>
+			<td><input type="text" name="public_methods_max" id="public_methods_max" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.public_methods_max }}"/></td>
 			<td><input type="text" name="auxiliary_classes" id="auxiliary_classes" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.auxiliary_classes }}"/></td>
-			<td><input type="text" name="auxiliary_classes_each" id="auxiliary_classes_each" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.auxiliary_classes_each }}"/></td>
+			<td><input type="text" name="auxiliary_classes_max" id="auxiliary_classes_max" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.auxiliary_classes_max }}"/></td>
 			<td><input type="text" name="unnecessary_attributes" id="unnecessary_attributes" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.unnecessary_attributes }}"/></td>
-			<td><input type="text" name="unnecessary_attributes_each" id="unnecessary_attributes_each" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.unnecessary_attributes_each }}"/></td>
+			<td><input type="text" name="unnecessary_attributes_max" id="unnecessary_attributes_max" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.unnecessary_attributes_max }}"/></td>
 			<td><input type="text" name="lower_camel_case" id="lower_camel_case" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.lower_camel_case }}"/></td>
-			<td><input type="text" name="lower_camel_case_each" id="lower_camel_case_each" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.lower_camel_case_each }}"/></td>
+			<td><input type="text" name="lower_camel_case_max" id="lower_camel_case_max" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.lower_camel_case_max }}"/></td>
 			<td><input type="text" name="code_quality" id="code_quality" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.code_quality }}"/></td>
-			<td><input type="text" name="code_quality_each" id="code_quality_each" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.code_quality_each }}"/></td>
+			<td><input type="text" name="code_quality_max" id="code_quality_max" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.code_quality_max }}"/></td>
 			<td><input type="text" name="duplicated_code" id="duplicated_code" onchange="calc()" class="sharif_input tiny" value="{{ static_analysis.duplicated_code }}"/></td>
 		</tr>
 	</tbody>
@@ -315,17 +315,17 @@
 	</tr>
 	<tbody>
 		<tr>
-			<th rowspan="2">Real Values</th>
+			<th rowspan="2">Real Values (<a target="_blank" id='sa-tooltip'><label for='sa-tooltip' title='Insert the weights of each type of Static Analysis Error Type, based on Static Analysis Discount, and the percentage of this value that represents the discount for each error os the respective type. Check a simulation of the calculated values beside.'>?</label> </a>)</th>
 			<td><input type="text" name="public_methods_value" id="public_methods_value" class="sharif_input tiny" readonly/></td>
-			<td><input type="text" name="public_methods_each_value" id="public_methods_each_value" class="sharif_input tiny" readonly/></td>
+			<td><input type="text" name="public_methods_max_value" id="public_methods_max_value" class="sharif_input tiny" readonly/></td>
 			<td><input type="text" name="auxiliary_classes_value" id="auxiliary_classes_value" class="sharif_input tiny" readonly/></td>
-			<td><input type="text" name="auxiliary_classes_each_value" id="auxiliary_classes_each_value" class="sharif_input tiny" readonly/></td>
+			<td><input type="text" name="auxiliary_classes_max_value" id="auxiliary_classes_max_value" class="sharif_input tiny" readonly/></td>
 			<td><input type="text" name="unnecessary_attributes_value" id="unnecessary_attributes_value" class="sharif_input tiny" readonly/></td>
-			<td><input type="text" name="unnecessary_attributes_each_value" id="unnecessary_attributes_each_value" class="sharif_input tiny" readonly/></td>
+			<td><input type="text" name="unnecessary_attributes_max_value" id="unnecessary_attributes_max_value" class="sharif_input tiny" readonly/></td>
 			<td><input type="text" name="lower_camel_case_value" id="lower_camel_case_value" class="sharif_input tiny" readonly/></td>
-			<td><input type="text" name="lower_camel_case_each_value" id="lower_camel_case_each_value" class="sharif_input tiny" readonly/></td>
+			<td><input type="text" name="lower_camel_case_max_value" id="lower_camel_case_max_value" class="sharif_input tiny" readonly/></td>
 			<td><input type="text" name="code_quality_value" id="code_quality_value" class="sharif_input tiny" readonly/></td>
-			<td><input type="text" name="code_quality_each_value" id="code_quality_each_value" class="sharif_input tiny" readonly/></td>
+			<td><input type="text" name="code_quality_max_value" id="code_quality_max_value" class="sharif_input tiny" readonly/></td>
 			<td><input type="text" name="duplicated_code_value" id="duplicated_code_value" class="sharif_input tiny" readonly/></td>
 		</tr>
 	</tbody>
@@ -342,11 +342,11 @@
 		document.getElementById('lower_camel_case_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('lower_camel_case').value)).toFixed(2);
 		document.getElementById('code_quality_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('code_quality').value)).toFixed(2);
 		document.getElementById('duplicated_code_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('duplicated_code').value)).toFixed(2);
-		document.getElementById('public_methods_each_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_each').value)).toFixed(2);
-		document.getElementById('auxiliary_classes_each_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_each').value)).toFixed(2);
-		document.getElementById('lower_camel_case_each_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_each').value)).toFixed(2);
-		document.getElementById('unnecessary_attributes_each_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_each').value)).toFixed(2);
-		document.getElementById('code_quality_each_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_each').value)).toFixed(2);
+		document.getElementById('public_methods_max_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_max').value)).toFixed(2);
+		document.getElementById('auxiliary_classes_max_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_max').value)).toFixed(2);
+		document.getElementById('lower_camel_case_max_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_max').value)).toFixed(2);
+		document.getElementById('unnecessary_attributes_max_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_max').value)).toFixed(2);
+		document.getElementById('code_quality_max_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_max').value)).toFixed(2);
 	};
 </script>
 

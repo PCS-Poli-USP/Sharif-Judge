@@ -1,0 +1,1 @@
+SerieTemporal eh filha de Serie e somente dela

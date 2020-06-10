@@ -1,0 +1,1 @@
+﻿Verifica uso adequado de herança e redefinição.

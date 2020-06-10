@@ -1,0 +1,1 @@
+SerieTemporal: uso dos dois adicionar com pontos proximos no de um parametro

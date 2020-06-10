@@ -85,13 +85,11 @@ class Assignment_model extends CI_Model
 
 		/* **** Adding problems to "problems" table **** */
 
-		//First remove all previous problems
-		$this->db->delete('problems', array('assignment'=>$id));
-
-
-
 		//And remove all previous static analysis too
 		$this->db->delete('static_analysis', array('assignment'=>$id));
+
+		//First remove all previous problems
+		$this->db->delete('problems', array('assignment'=>$id));
 
 		//Now add new problems:
 		$names = $this->input->post('name');
@@ -156,16 +154,17 @@ class Assignment_model extends CI_Model
 				//Now add new static analysis:
 				$static_analysis = array(
 					'assignment' => $id,
+					'problem' => $i,
 					'public_methods' => $this->input->post('public_methods'),
-					'public_methods_each' => $this->input->post('public_methods_each'),
+					'public_methods_max' => $this->input->post('public_methods_max'),
 					'auxiliary_classes' => $this->input->post('auxiliary_classes'),
-					'auxiliary_classes_each' => $this->input->post('auxiliary_classes_each'),
+					'auxiliary_classes_max' => $this->input->post('auxiliary_classes_max'),
 					'unnecessary_attributes' => $this->input->post('unnecessary_attributes'),
-					'unnecessary_attributes_each' => $this->input->post('unnecessary_attributes_each'),
+					'unnecessary_attributes_max' => $this->input->post('unnecessary_attributes_max'),
 					'lower_camel_case' => $this->input->post('lower_camel_case'),
-					'lower_camel_case_each' => $this->input->post('lower_camel_case_each'),
+					'lower_camel_case_max' => $this->input->post('lower_camel_case_max'),
 					'code_quality' => $this->input->post('code_quality'),
-					'code_quality_each' => $this->input->post('code_quality_each'),
+					'code_quality_max' => $this->input->post('code_quality_max'),
 					'duplicated_code' => $this->input->post('duplicated_code'),
 					'static_analysis_weight' => $this->input->post('static_analysis_weight')
 				);

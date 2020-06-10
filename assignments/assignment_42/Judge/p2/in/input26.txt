@@ -1,0 +1,1 @@
+SerieTemporal$_getNome_getNomeDoCanalX_e_getNomeDoCanalY

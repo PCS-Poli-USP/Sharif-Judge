@@ -5,9 +5,10 @@ import sys
 import re
 
 def checkUnusedPrivateParameter(pathCode, logFile):
+    
     exectutablePath = "exe"
     outputPath = "{0}/.unusedParameter".format(pathCode)
-    result = os.popen("clang++ {0}/*.cpp -o {1} -std=c++11 -Wunused-private-field \
+    result = os.popen("clang++ {0}/*.cpp -o{1} -std=c++11 -v -Wunused-private-field \
                       &> {2}".format(pathCode, exectutablePath, outputPath)).read()
     logFile.write("<span class=\"shj_b\">Unused private parameter\n")
     numOfUnused = 0
@@ -58,11 +59,12 @@ def checkBadPractices(pathCode, logFile):
     return linesNumber
 
 def checkDuplicateLines(pathCode, logFile, threshold):
+    
     outputPath = "{0}/.duplicatedLines".format(pathCode)
     result = os.popen('java -jar simian-2.5.10.jar {0}/*.cpp -threshold={2} &> {1}'\
                       .format(pathCode, outputPath, threshold)).read()
 
-    logFile.write("\n<span class=\"shj_b\">Duplicated code\n")
+    logFile.write("<span class=\"shj_b\">Duplicated code\n")
     numDuplicated = 0
     with open("{0}/.duplicatedLines".format(pathCode), "r") as file:
         for line in file:
@@ -92,16 +94,17 @@ def main():
     else:
         print("Error, bad path names")
         return
-    
+
     with open("./IgnoreFileList.txt") as ignoreFile:
         ignoreFilesList = ignoreFile.readlines()
 
     ignoreFilesList = [x.strip() for x in ignoreFilesList] 
 
     with open(pathResult + "/static-errors", "w") as outputFile:
-    
+        
         pathCode = pathCodes 
-
+      
+        # quebra aqui
         listFiles = os.listdir(pathCode)
 
         # All ending in .h and without dot in the begining
@@ -116,7 +119,7 @@ def main():
         camelCaseAllClass = list()
 
         # Log Outputs --------------------------------------------------------------
-        with open("{0}/static-result.html".format(pathResult), "w") as logFile:
+        with open(pathResult + "/static-result.html", "w") as logFile:
 
             logFile.write("\n\n<span class=\"shj_b\">STATIC ANALYSIS:\n")
             logFile.write("\n<span class=\"shj_b\">Extra public members\n")
@@ -124,6 +127,8 @@ def main():
             for file in listHeaders:
 
                 fileNameHeader = pathCode + "/" + file
+
+                
                 fileNameTemplate = pathTemplate + "/" +  file[0:-2] + ".template"
 
                 if (os.path.exists(fileNameTemplate)):
@@ -171,8 +176,12 @@ def main():
                 logFile.write("<span class=\"shj_g\">ACCEPT\n")
 
             totalUnusedVars = checkUnusedPrivateParameter(pathCode, logFile)
+        
             totalBadPractices = checkBadPractices(pathCode, logFile)
+
             totalDuplicatedLines = checkDuplicateLines(pathCode, logFile, threshold=9)
+
+
 
         # Write output file
         outputFile.write(str(totalCCError) + "," + \

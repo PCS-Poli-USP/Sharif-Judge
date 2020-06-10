@@ -1,0 +1,1 @@
+﻿Verifica as classes Eixo, Ponto, Serie e SerieTemporal.

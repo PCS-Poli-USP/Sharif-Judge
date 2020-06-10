@@ -387,15 +387,15 @@ class Assignments extends CI_Controller
 				$data['static_analysis'] = array(
 					'static_analysis_weight' => 30,
 					'public_methods' => 1,
-					'public_methods_each' => 10,
+					'public_methods_max' => 10,
 					'auxiliary_classes' => 1,
-					'auxiliary_classes_each' => 10,
+					'auxiliary_classes_max' => 10,
 					'unnecessary_attributes' => 1,
-					'unnecessary_attributes_each' => 10,
+					'unnecessary_attributes_max' => 10,
 					'lower_camel_case' => 1,
-					'lower_camel_case_each' => 10,
+					'lower_camel_case_max' => 10,
 					'code_quality' => 1,
-					'code_quality_each' => 10,
+					'code_quality_max' => 10,
 					'duplicated_code' => 1
 				);
 			};
@@ -424,15 +424,15 @@ class Assignments extends CI_Controller
 				$data['static_analysis'] = array(
 						'static_analysis_weight' => 30,
 						'public_methods' => 1,
-						'public_methods_each' => 10,
+						'public_methods_max' => 10,
 						'auxiliary_classes' => 1,
-						'auxiliary_classes_each' => 10,
+						'auxiliary_classes_max' => 10,
 						'unnecessary_attributes' => 1,
-						'unnecessary_attributes_each' => 10,
+						'unnecessary_attributes_max' => 10,
 						'lower_camel_case' => 1,
-						'lower_camel_case_each' => 10,
+						'lower_camel_case_max' => 10,
 						'code_quality' => 1,
-						'code_quality_each' => 10,
+						'code_quality_max' => 10,
 						'duplicated_code' => 1
 				);
 			}
@@ -476,15 +476,15 @@ class Assignments extends CI_Controller
 				$data['static_analysis'] = array(
 					'static_analysis_weight' => $this->input->post('static_analysis_weight'),
 					'public_methods' => $this->input->post('public_methods'),
-					'public_methods_each' => $this->input->post('public_methods_each'),
+					'public_methods_max' => $this->input->post('public_methods_max'),
 					'auxiliary_classes' => $this->input->post('auxiliary_classes'),
-					'auxiliary_classes_each' => $this->input->post('auxiliary_classes_each'),
+					'auxiliary_classes_max' => $this->input->post('auxiliary_classes_max'),
 					'unnecessary_attributes' => $this->input->post('unnecessary_attributes'),
-					'unnecessary_attributes_each' => $this->input->post('unnecessary_attributes_each'),
+					'unnecessary_attributes_max' => $this->input->post('unnecessary_attributes_max'),
 					'lower_camel_case' => $this->input->post('lower_camel_case'),
-					'lower_camel_case_each' => $this->input->post('lower_camel_case_each'),
+					'lower_camel_case_max' => $this->input->post('lower_camel_case_max'),
 					'code_quality' => $this->input->post('code_quality'),
-					'code_quality_each' => $this->input->post('code_quality_each'),
+					'code_quality_max' => $this->input->post('code_quality_max'),
 					'duplicated_code' => $this->input->post('duplicated_code')
 
 				);				
@@ -526,15 +526,15 @@ class Assignments extends CI_Controller
 		$this->form_validation->set_rules('weight[]', 'weight', 'required|integer');
 		$this->form_validation->set_rules('static_analysis_weight', 'The max weight discounted by static analysis errors', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('public_methods', 'Weight discounted by public method', 'required|is_natural|less_than[101]');
-		$this->form_validation->set_rules('public_methods_each', 'Each discount by public methods', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('public_methods_max', 'Each discount by public methods', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('auxiliary_classes', 'Weight discounted by auxiliary class', 'required|is_natural|less_than[101]');
-		$this->form_validation->set_rules('auxiliary_classes_each', 'Each discount by auxiliary classes', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('auxiliary_classes_max', 'Each discount by auxiliary classes', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('unnecessary_attributes', 'Weight discounted by unnecessary attribute', 'required|is_natural|less_than[101]');
-		$this->form_validation->set_rules('unnecessary_attributes_each', 'Each discount by unnecessary attributes', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('unnecessary_attributes_max', 'Each discount by unnecessary attributes', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('lower_camel_case', 'Weight discounted by vars out of lower_camel_case', 'required|is_natural|less_than[101]');
-		$this->form_validation->set_rules('lower_camel_case_each', 'Each discount by vars out of lower_camel_case', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('lower_camel_case_max', 'Each discount by vars out of lower_camel_case', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('code_quality', 'Weight discounted by quality code error', 'required|is_natural|less_than[101]');
-		$this->form_validation->set_rules('code_quality_each', 'Each discount by quality code errors', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('code_quality_max', 'Each discount by quality code errors', 'required|is_natural|less_than[101]');
 		$this->form_validation->set_rules('duplicated_code', 'Weight discounted when there are more than 9 lines duplicated', 'required|is_natural|less_than[101]');
 
 		$sum = 0;
@@ -665,7 +665,7 @@ class Assignments extends CI_Controller
 
 			// Extract new test cases and descriptions in temp directory
 			$this->load->library('unzip');
-			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf'));
+			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf', 'template'));
 			$extract_result = $this->unzip->extract($u_data['full_path'], $tmp_dir);
 
 			// Remove the zip file

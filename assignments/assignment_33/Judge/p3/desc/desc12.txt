@@ -1,0 +1,1 @@
+EixoDinamico: getMinimo minimo e maximo iguais

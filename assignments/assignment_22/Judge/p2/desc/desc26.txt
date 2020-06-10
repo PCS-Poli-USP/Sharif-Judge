@@ -1,0 +1,1 @@
+SerieTemporal: getNome getNomeDoCanalX e getNomeDoCanalY

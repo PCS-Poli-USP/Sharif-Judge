@@ -144,35 +144,39 @@ class Install extends CI_Controller
 				'static_analysis'	=> array('type' => 'INT'),
 			);
 			$this->dbforge->add_field($fields);
-			$this->dbforge->add_key(array('assignment', 'id'));
+			$this->dbforge->add_key(array('assignment', 'id')); // BTREE KEY
+			$this->dbforge->add_key('assignment', TRUE); //COMPOSITE PRIMARY KEY
+			$this->dbforge->add_key('id', TRUE); //COMPOSITE PRIMARY KEY
 			if ( ! $this->dbforge->create_table('problems', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('problems'));
 
 
 			// create table 'static_analysis'
 			$fields = array(
-				'assignment'       				=> array('type' => 'INT', 'unsigned' => TRUE),
+				'assignment'       				=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'problem'						=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'public_methods'               	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
-				'public_methods_each'         	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'public_methods_max'         	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'auxiliary_classes'         	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
-				'auxiliary_classes_each'   		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'auxiliary_classes_max'   		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'unnecessary_attributes'     	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
-				'unnecessary_attributes_each'	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'unnecessary_attributes_max'	=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'lower_camel_case'  			=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
-				'lower_camel_case_each'    		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'lower_camel_case_max'    		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'code_quality'					=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
-				'code_quality_each'       		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
+				'code_quality_max'       		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'duplicated_code'         		=> array('type' => 'SMALLINT', 'unsigned' => TRUE),
 				'static_analysis_weight' 		=> array('type' => 'INT', 'unsigned' => TRUE),
 			);
-			$this->dbforge->add_key('assignment', TRUE); //PRIMARY KEY
+			$this->dbforge->add_key('assignment', TRUE); //COMPOSITE PRIMARY KEY
+			$this->dbforge->add_key('problem', TRUE); //COMPOSITE PRIMARY KEY
 			$this->dbforge->add_field($fields);
 			if ( ! $this->dbforge->create_table('static_analysis', TRUE))
 				show_error("Error creating database table ".$this->db->dbprefix('static_analysis'));
-			// ADD FOREING KEY TO shj_assignments TABLE
+			// ADD FOREING KEY TO shj_problems TABLE
 			$this->db->query(
 				"ALTER TABLE {$this->db->dbprefix('static_analysis')}
-				 ADD CONSTRAINT {$this->db->dbprefix('static_analysis_fkey')} FOREIGN KEY(assignment) REFERENCES {$this->db->dbprefix('assignments')}(id) ON DELETE CASCADE;"
+				 ADD CONSTRAINT {$this->db->dbprefix('static_analysis_problem_fkey')} FOREIGN KEY(assignment, problem) REFERENCES {$this->db->dbprefix('problems')}(assignment, id) ON DELETE CASCADE;"
 			);
 
 

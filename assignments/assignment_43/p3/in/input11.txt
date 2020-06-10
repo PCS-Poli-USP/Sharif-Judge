@@ -1,0 +1,1 @@
+EixoDinamico$_getMinimo_Serie_vazia

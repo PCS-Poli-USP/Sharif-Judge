@@ -120,38 +120,36 @@ else
 fi
 # static analysis script file
 STATIC_ANALYSIS_PATH=${18}
-# static analysis templates directory
-STATIC_ANALYSIS_TEMPLATES=${19}
 # enable/disable static analysis
-if [ ${20} = '1' ]; then
+if [ ${19} = "1" ]; then
 	STATIC_ANALYSIS=true
 else
 	STATIC_ANALYSIS=false
 fi
-# pucblic methods error weight
-PUBLIC_METHODS=${21}
-# each pucblic methods error discount
-EACH_PUBLIC_METHODS=${22}
-# auxiliary classes error weight
-AUXILIARY_CLASSES=${23}
+# weight public methods error discount
+WEIGHT_PUBLIC_METHODS=${20}
+# each public methods error discount
+EACH_PUBLIC_METHODS=${21}
+# weight auxiliary classes error discount
+WEIGHT_AUXILIARY_CLASSES=${22}
 # each auxiliary classes error discount
-EACH_AUXILIARY_CLASSES=${24}
-# unnecessary attributes error weight
-UNNECESSARY_ATTRIBUTES=${25}
+EACH_AUXILIARY_CLASSES=${23}
+# weight unnecessary attributes error discount
+WEIGHT_UNNECESSARY_ATTRIBUTES=${24}
 # each unnecessary attributes error discount
-EACH_UNECESSARY_ATTRIBUTES=${26}
-# lower camel case error weight
-LOWER_CAMEL_CASE=${27}
+EACH_UNNECESSARY_ATTRIBUTES=${25}
+# weight lower camel case error discount
+WEIGHT_LOWER_CAMEL_CASE=${26}
 # each lower camel case error discount
-EACH_LOWER_CAMEL_CASE=${28}
-#  code quality error weight
-CODE_QUALITY=${29}
+EACH_LOWER_CAMEL_CASE=${27}
+# weight code quality error discount
+WEIGHT_CODE_QUALITY=${28}
 # each code quality error discount
-EACH_CODE_QUALITY=${30}
-# duplicated code error weight
-DUPLICATED_CODE=${31}
+EACH_CODE_QUALITY=${29}
+# weight duplicated code error discount
+DUPLICATED_CODE=${30}
 # static analysis total weight
-STATIC_ANALYSIS_WEIGHT=${32}
+STATIC_ANALYSIS_WEIGHT=${31}
 
 # DIFFOPTION can also be "ignore" or "exact".
 # ignore: In this case, before diff command, all newlines and whitespaces will be removed from both files
@@ -176,7 +174,7 @@ function shj_finish
 	# Get Current Time (in milliseconds)
 	END=$(($(date +%s%N)/1000000));
 	shj_log "\nTotal Execution Time: $((END-START)) ms"
-	echo $@
+	echo $@ 
 	exit 0
 }
 
@@ -336,7 +334,7 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		if [ -f "$PROBLEMPATH/$UN/$FILENAME.$compressedext" ]; then
 			7z e "$PROBLEMPATH/$UN/$FILENAME.$compressedext" >/dev/null
 			
-			# Concatenate all *.cpp and *.h files into a single file
+			# Concatenate all *.cpp azipnd *.h files into a single file
 			# This allow file visualization on the web interface
 			for cppfile in `ls 2>/dev/null`; do
 			
@@ -351,12 +349,12 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 				echo "==============================================================================="
 				echo ""
         
-        if [ "$(file -ib $cppfile)" == "text/x-c; charset=iso-8859-1" ]; then
-          # Converte o programa para UTF-8 se houver caracteres especiais
-          iconv -f ISO-8859-1 -t UTF-8 $cppfile
-        else
-          cat $cppfile
-        fi
+				if [ "$(file -ib $cppfile)" == "text/x-c; charset=iso-8859-1" ]; then
+				# Converte o programa para UTF-8 se houver caracteres especiais
+				iconv -f ISO-8859-1 -t UTF-8 $cppfile
+				else
+				cat $cppfile
+				fi
         
 				echo ""
 				echo ""
@@ -508,7 +506,6 @@ if [ -f "$PROBLEMPATH/tester.executable" ]; then
 	cp $PROBLEMPATH/tester.executable shj_tester
 	chmod +x shj_tester
 fi
-
 
 PASSEDTESTS=0
 
@@ -677,17 +674,6 @@ for((i=1;i<=TST;i++)); do
 	fi
 done
 
-if $STATIC_ANALYSIS; then
-	shj_log "\n\n\n=== STATIC ANALYSIS TEST ==="
-
-	cd $STATIC_ANALYSIS_PATH
-	./sudo python3 CppParser.py $PROBLEMPATH/$UN $PROBLEMPATH/inject $PROBLEMPATH/$UN
-	
-	shj_log "End of Static Analysis Test\n\n\n"
-else	
-	shj_loh "\n\n\n=== NO STATIC ANALYSIS TEST ===\n\n\n"
-fi
-
 
 # Converte resultado para UTF-8 se houver caracteres especiais
 if [ "$(file -ib $PROBLEMPATH/$UN/result.html)" == "text/plain; charset=iso-8859-1" ]; then
@@ -712,11 +698,121 @@ fi
 	#fi
 
 
+if $STATIC_ANALYSIS; then
+	cd ..
+	TESTER_PATH=$(pwd)
+	cd $STATIC_ANALYSIS_PATH
+	shj_log "\n=== STATIC ANALYSIS TEST ==="
+	python3 CppParser.py $TESTER_PATH/$JAIL /home/bruno/Documents/testes/1 . 
+	STATIC_ANALYSIS_ERRORS=$(cat static-errors)
+	
+	echo "$(cat static-result.html)" >>$PROBLEMPATH/$UN/result.html
+	
+	ERROR_COUNT=0
+	ERROR_STEP=1
+	while IFS=',' read -ra ERROR; do
+		for i in "${ERROR[@]}"; do
+			case $ERROR_COUNT in
+				0)LOWER_CAMEL_CASE_ERRORS=$i
+				;;
+				1)PUBLIC_METHODS_ERRORS=$i
+				;;
+				2)UNNECESSARY_ATTRIBUTES_ERRORS=$i
+				;;
+				3)UNUSED_VARS_ERRORS=$i
+				;;
+				4)AUXILIARY_CLASSES_ERRORS=$i
+				;;
+				5)CODE_QUALITY_ERRORS=$i
+				;;
+				6)DUPLICATED_CODE_ERRORS=$i
+				;;
+				*)
+				;;
+			esac
+			ERROR_COUNT=$(( $ERROR_COUNT + $ERROR_STEP))
+		done
+	done <<< "$STATIC_ANALYSIS_ERRORS"
 
-cd ..
-rm -r $JAIL >/dev/null 2>/dev/null # removing files
+	shj_log "LOWER_CAMEL_CASE_ERRORS: $LOWER_CAMEL_CASE_ERRORS"
+	shj_log "PUBLIC_METHODS_ERRORS: $PUBLIC_METHODS_ERRORS"
+	shj_log "UNNECESSARY_ATTRIBUTES_ERRORS: $UNNECESSARY_ATTRIBUTES_ERRORS"
+	shj_log "UNUSED_VARS_ERRORS: $UNUSED_VARS_ERRORS"
+	shj_log "AUXILIARY_CLASSES_ERRORS: $AUXILIARY_CLASSES_ERRORS"
+	shj_log "CODE_QUALITY_ERRORS: $CODE_QUALITY_ERRORS"
+	shj_log "DUPLICATED_CODE_ERRORS: $DUPLICATED_CODE_ERRORS"
 
-((SCORE=PASSEDTESTS*10000/TST)) # give score from 10,000
-shj_log "\nScore from 10000: $SCORE"
+	SUM_SA_WEIGHT=$(( $WEIGHT_PUBLIC_METHODS + $WEIGHT_AUXILIARY_CLASSES + $WEIGHT_UNNECESSARY_ATTRIBUTES + $WEIGHT_LOWER_CAMEL_CASE + $WEIGHT_CODE_QUALITY + $DUPLICATED_CODE ))
 
-shj_finish $SCORE
+	AUX_INDEX=$(( $STATIC_ANALYSIS_WEIGHT/$SUM_SA_WEIGHT ))
+
+	shj_log "AUX_INDEX: $AUX_INDEX"
+
+	LOWER_CAMEL_CASE_DISCOUNT=$(( $EACH_LOWER_CAMEL_CASE*$LOWER_CAMEL_CASE_ERRORS*$AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
+	LCC_AUX=$(( ($AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE)-$LOWER_CAMEL_CASE_DISCOUNT ))
+	if [$LCC_AUX -le 0]
+	then
+		LOWER_CAMEL_CASE_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
+	fi
+
+	PUBLIC_METHODS_DISCOUNT=$(( $EACH_PUBLIC_METHODS*$PUBLIC_METHODS_ERRORS*$AUX_INDEX*$WEIGHT_PUBLIC_METHODS ))
+	PM_AUX=$(( ($AUX_INDEX*$WEIGHT_PUBLIC_METHODS)-$PUBLIC_METHODS_DISCOUNT ))
+	if [$PM_AUX -le 0]
+	then
+		PUBLIC_METHODS_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_PUBLIC_METHODS ))
+	fi
+
+	UNNECESSARY_ATTRIBUTES_DISCOUNT=$(( $EACH_UNNECESSARY_ATTRIBUTES*$UNNECESSARY_ATTRIBUTES_ERRORS*$AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES ))
+	UA_AUX=$(( ($AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES)-$UNNECESSARY_ATTRIBUTES_DISCOUNT ))
+	if [$UA_AUX -le 0]
+	then
+		UNNECESSARY_ATTRIBUTES_DISCOUNT=$((  $AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES ))
+	fi
+
+	AUXILIARY_CLASSES_DISCOUNT=$(( $EACH_AUXILIARY_CLASSES*$AUXILIARY_CLASSES_ERRORS*$AUX_INDEX*$WEIGHT_AUXILIARY_CLASSES ))
+	AC_AUX=$(( ($AUX_INDEX*$WEIGHT_AUXILIARY_CLASSES)-$AUXILIARY_CLASSES_DISCOUNT ))
+	if [$AC_AUX -le 0]
+	then
+		AUXILIARY_CLASSES_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_AUXILIARY_CLASSEST ))
+	fi
+
+	CODE_QUALITY_DISCOUNT=$(( $EACH_CODE_QUALITY*$CODE_QUALITY_ERRORS*$AUX_INDEX*$WEIGHT_CODE_QUALITY ))
+	CQ_AUX=$(( ($AUX_INDEX*$WEIGHT_CODE_QUALITY)-$CODE_QUALITY_DISCOUNT ))
+	if [$CQ_AUX -le 0]
+	then
+		CODE_QUALITY_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_CODE_QUALITY ))
+	fi
+	
+	DUPLICATED_CODE_DISCOUNT=0
+	if [$DUPLICATED_CODE_ERRORS -ge 9]
+	then
+		DUPLICATED_CODE_DISCOUNT=$(( $AUX_INDEX*$DUPLICATED_CODE ))
+	fi
+
+	TOTAL_STATIC_ANALYSIS_DISCOUNT=$(( $LOWER_CAMEL_CASE_DISCOUNT+$PUBLIC_METHODS_DISCOUNT+$UNNECESSARY_ATTRIBUTES_DISCOUNT+$AUXILIARY_CLASSES_DISCOUNT+$CODE_QUALITY_DISCOUNT+$DUPLICATED_CODE_DISCOUNT ))
+	shj_log "$LOWER_CAMEL_CASE_DISCOUNT $PUBLIC_METHODS_DISCOUNT $UNNECESSARY_ATTRIBUTES_DISCOUNT $AUXILIARY_CLASSES_DISCOUNT $CODE_QUALITY_DISCOUNT $DUPLICATED_CODE_DISCOUNT"
+	shj_log "\nTotal StaticAnalysis score discount from 10000: $TOTAL_STATIC_ANALYSIS_DISCOUNT \n"
+
+	mv static-* $PROBLEMPATH/$UN
+	
+	cd $JAIL
+	
+
+
+	cd ..
+	rm -r $JAIL >/dev/null 2>/dev/null # removing files
+
+	((SCORE=(PASSEDTESTS*10000/TST)-TOTAL_STATIC_ANALYSIS_DISCOUNT)) # give score from 10,000 and discount static analysis
+	shj_log "\nScore from 10000 with static analysis: $SCORE"
+
+	shj_finish $SCORE
+else 	
+	cd ..
+	rm -r $JAIL >/dev/null 2>/dev/null # removing files
+
+	shj_log "\n=== NO STATIC ANALYSIS TEST ===\n"
+	((SCORE=PASSEDTESTS*10000/TST)) # give score from 10,000
+	shj_log "\nScore from 10000: $SCORE"
+
+	shj_finish $SCORE
+fi

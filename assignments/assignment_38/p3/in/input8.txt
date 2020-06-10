@@ -1,0 +1,1 @@
+EixoDinamico$_getMinimo_Serie_com_1_valor

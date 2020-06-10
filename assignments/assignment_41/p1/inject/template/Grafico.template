@@ -1,0 +1,22 @@
+class Grafico
+
+public:
+setSerieNasAbscissas()
+setSerieNasOrdenadas()
+setEixoDasAbscissas()
+setEixoDasOrdenadas()
+desenhar()
+reset()
+setTela()
+getSerieNasAbscissas()
+getSerieNasOrdenadas()
+getEixoDasAbscissas()
+getEixoDasOrdenadas()
+
+protected:
+ALL
+ALL()
+
+private:
+ALL
+ALL()

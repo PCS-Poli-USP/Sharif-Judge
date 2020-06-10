@@ -1,0 +1,1 @@
+SerieTemporal: casos que getPosicao retorna NULL

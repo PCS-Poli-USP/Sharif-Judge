@@ -17,3 +17,5 @@ tester/easysandbox/t/*
 
 # Ignore MOSS File
 tester/moss
+tester/static_analysis/files/teste/static-errors
+tester/static_analysis/files/teste/static-result.html

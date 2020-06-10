@@ -72,8 +72,8 @@ class Queueprocess extends CI_Controller
 			$problemdir = $assignments_dir."/assignment_$assignment/p".$problem['id'];
 			$userdir = "$problemdir/$username";
 			//$the_file = "$userdir/$raw_filename.$file_extension";
-			$cpp_parser = "$tester_path/static_analysis/";
-			$staticAnalaysisTemplates = "$problemdir/inject/static_analysis_template/";
+			$cpp_parser_path = "$tester_path/static_analysis";
+			$staticAnalaysisTemplates = "$problemdir/inject/static_analysis_template";
 
 			$op1 = $this->settings_model->get_setting('enable_log');
 			$op2 = $this->settings_model->get_setting('enable_easysandbox');
@@ -106,21 +106,21 @@ class Queueprocess extends CI_Controller
 			$static_analysis = $problem['static_analysis'];
 
 			$public_methods = $static_analysis_info['public_methods'];
-			$public_methods_each = $static_analysis_info['public_methods_each'];
+			$public_methods_max = $static_analysis_info['public_methods_max'];
 			$auxiliary_classes = $static_analysis_info['auxiliary_classes'];
-			$auxiliary_classes_each = $static_analysis_info['auxiliary_classes_each'];
+			$auxiliary_classes_max = $static_analysis_info['auxiliary_classes_max'];
 			$unnecessary_attributes = $static_analysis_info['unnecessary_attributes'];
-			$unnecessary_attributes_each = $static_analysis_info['unnecessary_attributes_each'];
+			$unnecessary_attributes_max = $static_analysis_info['unnecessary_attributes_max'];
 			$lower_camel_case = $static_analysis_info['lower_camel_case'];
-			$lower_camel_case_each = $static_analysis_info['lower_camel_case_each'];
+			$lower_camel_case_max = $static_analysis_info['lower_camel_case_max'];
 			$code_quality = $static_analysis_info['code_quality'];
-			$code_quality_each = $static_analysis_info['code_quality_each'];
+			$code_quality_max = $static_analysis_info['code_quality_max'];
 			$duplicated_code = $static_analysis_info['duplicated_code'];
 			$static_analysis_weight = $static_analysis_info['static_analysis_weight'];
 
 			$output_size_limit = $this->settings_model->get_setting('output_size_limit') * 1024;
 
-			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $cpp_parser $staticAnalaysisTemplates $static_analysis $public_methods $public_methods_each $auxiliary_classes $auxiliary_classes_each $unnecessary_attributes $unnecessary_attributes_each $lower_camel_case $lower_camel_case_each $code_quality $code_quality $code_quality_each $duplicated_code $static_analysis_weight";
+			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $cpp_parser_path $static_analysis $public_methods $public_methods_max $auxiliary_classes $auxiliary_classes_max $unnecessary_attributes $unnecessary_attributes_max $lower_camel_case $lower_camel_case_max $code_quality $code_quality_max $duplicated_code $static_analysis_weight";
 
 			file_put_contents($userdir.'/log', $cmd);
 
@@ -139,6 +139,9 @@ class Queueprocess extends CI_Controller
 			{
 				shell_exec("mv $userdir/result.html $userdir/result-{$submit_id}.html");
 				shell_exec("mv $userdir/log $userdir/log-{$submit_id}");
+				shell_exec("mv $userdir/static-result.html $userdir/static-result-{$submit_id}.html");
+				shell_exec("mv $userdir/static-errors $userdir/static-errors-{$submit_id}");
+
 			}
 
 			if (is_numeric($output)) {

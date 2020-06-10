@@ -1,0 +1,1 @@
+Ponto$_construtor_destrutor_getX_getY

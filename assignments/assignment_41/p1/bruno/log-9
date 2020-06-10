@@ -1,0 +1,63 @@
+cd /var/www/html/Sharif-Judge/tester;
+./tester.sh /var/www/html/Sharif-Judge/assignments/assignment_41/p1 'bruno' '4' '4-9' cpp 0.5 1 50000 1048576 diff -bB 1 1 0 0 0 0 /var/www/html/Sharif-Judge/tester/static_analysis/ /var/www/html/Sharif-Judge/assignments/assignment_41/p1/inject/static_analysis_template/ 1 1 10 1 10 1 10 1 10 1 1 10 1 30
+Starting tester...
+Static Analysis: true
+qua dez 18 11:15:12 -03 2019
+Language: cpp
+Time Limit: 0.5 s
+Memory Limit: 50000 kB
+Output size limit: 1048576 bytes
+EasySandbox: true
+C/C++ Shield: false
+Compiling as cpp
+Enabling EasySandbox
+EasySandbox is not built. Disabling EasySandbox...
+Compiled. Exit Code=0  Execution Time: 3950 ms
+
+Testing...
+7 test cases found
+Copying tester executable to current directory
+
+=== STATIC ANALYSIS TEST ===
+2
+End of Static Analysis Test
+
+
+=== TEST 1 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 2 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 3 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 4 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 5 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 6 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+=== TEST 7 ===
+Exit Code = 0
+Time: 0.00 s
+ACCEPTED
+
+Score from 10000: 10000
+
+Total Execution Time: 4263 ms
