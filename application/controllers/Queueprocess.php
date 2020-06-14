@@ -73,7 +73,7 @@ class Queueprocess extends CI_Controller
 			$userdir = "$problemdir/$username";
 			//$the_file = "$userdir/$raw_filename.$file_extension";
 			$cpp_parser_path = "$tester_path/static_analysis";
-			$staticAnalaysisTemplates = "$problemdir/inject/static_analysis_template";
+			$staticAnalaysisTemplates = "$problemdir/../static_analysis_template";
 
 			$op1 = $this->settings_model->get_setting('enable_log');
 			$op2 = $this->settings_model->get_setting('enable_easysandbox');
@@ -120,7 +120,7 @@ class Queueprocess extends CI_Controller
 
 			$output_size_limit = $this->settings_model->get_setting('output_size_limit') * 1024;
 
-			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $cpp_parser_path $static_analysis $public_methods $public_methods_max $auxiliary_classes $auxiliary_classes_max $unnecessary_attributes $unnecessary_attributes_max $lower_camel_case $lower_camel_case_max $code_quality $code_quality_max $duplicated_code $static_analysis_weight";
+			$cmd = "cd $tester_path;\n./tester.sh $problemdir ".escapeshellarg($username).' '.escapeshellarg($main_filename).' '.escapeshellarg($raw_filename)." $file_type $time_limit $time_limit_int $memory_limit $output_size_limit $diff_cmd $diff_arg $op1 $op2 $op3 $op4 $op5 $op6 $cpp_parser_path $static_analysis $public_methods $public_methods_max $auxiliary_classes $auxiliary_classes_max $unnecessary_attributes $unnecessary_attributes_max $lower_camel_case $lower_camel_case_max $code_quality $code_quality_max $duplicated_code $static_analysis_weight $staticAnalaysisTemplates";
 
 			file_put_contents($userdir.'/log', $cmd);
 

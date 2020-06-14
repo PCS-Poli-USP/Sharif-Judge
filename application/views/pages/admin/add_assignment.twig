@@ -336,17 +336,17 @@
 <script>
 	function calc() {
 		let sum_weight = parseInt(document.getElementById('public_methods').value) + parseInt(document.getElementById('auxiliary_classes').value) + parseInt(document.getElementById('unnecessary_attributes').value) + parseInt(document.getElementById('lower_camel_case').value) + parseInt(document.getElementById('code_quality').value) + parseInt(document.getElementById('duplicated_code').value); 
-		document.getElementById('public_methods_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('public_methods').value)).toFixed(2);
-		document.getElementById('auxiliary_classes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('auxiliary_classes').value)).toFixed(2);
-		document.getElementById('unnecessary_attributes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('unnecessary_attributes').value)).toFixed(2);
-		document.getElementById('lower_camel_case_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('lower_camel_case').value)).toFixed(2);
-		document.getElementById('code_quality_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('code_quality').value)).toFixed(2);
-		document.getElementById('duplicated_code_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('duplicated_code').value)).toFixed(2);
-		document.getElementById('public_methods_max_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_max').value)).toFixed(2);
-		document.getElementById('auxiliary_classes_max_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_max').value)).toFixed(2);
-		document.getElementById('lower_camel_case_max_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_max').value)).toFixed(2);
-		document.getElementById('unnecessary_attributes_max_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_max').value)).toFixed(2);
-		document.getElementById('code_quality_max_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_max').value)).toFixed(2);
+		document.getElementById('public_methods_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('public_methods').value)).toFixed(1);
+		document.getElementById('auxiliary_classes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('auxiliary_classes').value)).toFixed(1);
+		document.getElementById('unnecessary_attributes_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('unnecessary_attributes').value)).toFixed(1);
+		document.getElementById('lower_camel_case_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('lower_camel_case').value)).toFixed(1);
+		document.getElementById('code_quality_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('code_quality').value)).toFixed(1);
+		document.getElementById('duplicated_code_value').value = ((parseInt(document.getElementById('static_analysis_weight').value) / sum_weight ) * parseInt(document.getElementById('duplicated_code').value)).toFixed(1);
+		document.getElementById('public_methods_max_value').value = ((parseInt(document.getElementById('public_methods_value').value) / 100) * parseInt(document.getElementById('public_methods_max').value)).toFixed(1);
+		document.getElementById('auxiliary_classes_max_value').value = ((parseInt(document.getElementById('auxiliary_classes_value').value) / 100) * parseInt(document.getElementById('auxiliary_classes_max').value)).toFixed(1);
+		document.getElementById('lower_camel_case_max_value').value = ((parseInt(document.getElementById('lower_camel_case_value').value) / 100) * parseInt(document.getElementById('lower_camel_case_max').value)).toFixed(1);
+		document.getElementById('unnecessary_attributes_max_value').value = ((parseInt(document.getElementById('unnecessary_attributes_value').value) / 100) * parseInt(document.getElementById('unnecessary_attributes_max').value)).toFixed(1);
+		document.getElementById('code_quality_max_value').value = ((parseInt(document.getElementById('code_quality_value').value) / 100) * parseInt(document.getElementById('code_quality_max').value)).toFixed(1);
 	};
 </script>
 

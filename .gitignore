@@ -21,4 +21,6 @@ tester/static_analysis/files/teste/static-errors
 tester/static_analysis/files/teste/static-result.html
 
 #Ignore assignments templates files
-assignments/*
+assignments/assignment*
+
+
