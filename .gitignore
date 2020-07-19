@@ -17,8 +17,9 @@ tester/easysandbox/t/*
 
 # Ignore MOSS File
 tester/moss
-tester/static_analysis/files/teste/static-errors
-tester/static_analysis/files/teste/static-result.html
+
+# Ignore Statis Analysis cache files
+tester/static_analysis/__pycache__
 
 #Ignore assignments templates files
 assignments/assignment*
