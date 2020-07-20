@@ -95,7 +95,7 @@ def main():
         print("Error, bad path names")
         return
 
-    with open("./IgnoreFileList.txt") as ignoreFile:
+    with open(pathTemplate + "/IgnoreFileList.txt") as ignoreFile:
         ignoreFilesList = ignoreFile.readlines()
 
     ignoreFilesList = [x.strip() for x in ignoreFilesList] 

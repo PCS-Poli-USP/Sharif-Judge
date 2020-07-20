@@ -497,6 +497,67 @@ class Assignments extends CI_Controller
 
 	// ------------------------------------------------------------------------
 
+		/**
+	 * Copying the unit test files to the assignment directory
+	 */
+	private function unittest_add($assignments_root, $assignment_dir, $a)
+	{
+		$unit_test_folder = $this->config->item('unit_test_folder');
+		$inject_files = scandir("$assignments_root/$unit_test_folder");	
+		foreach ($inject_files as $inject_file)
+		{
+			if(strpos($inject_file, "tester.cpp") !== FALSE)
+			{
+				copy("$assignments_root/$unit_test_folder/$inject_file", "$assignment_dir/p$a/$inject_file");
+			}
+			elseif(strpos($inject_file, ".cpp") !== FALSE or strpos($inject_file, ".h") !== FALSE)
+			{
+				copy("$assignments_root/$unit_test_folder/$inject_file", "$assignment_dir/p$a/inject/$inject_file");
+			}
+		}
+	}
+
+	/**
+	 * Creation of the directory folders in unittestcase
+	 */
+	private function dir_creation($assignment_dir,$a)
+	{
+		mkdir("$assignment_dir/p$a/desc", 0700);
+		mkdir("$assignment_dir/p$a/in", 0700);
+		mkdir("$assignment_dir/p$a/inject", 0700);
+	}
+
+	/**
+	 * Creation of assingments files for unit tes
+	 */
+	private function file_adding($assignment_dir,$a,$doc, &$number_of_test_cases)
+	{
+		if($file_Test_Case = fopen("$assignment_dir/p$a/$doc", "r") or die ("Unable to open file"))
+		{
+			while(! feof($file_Test_Case))
+			{
+				$line = fgets($file_Test_Case);     
+				$start_of_test_case = strpos($line , $this->config->item('test_case_name'));
+				if ($start_of_test_case !== FALSE)
+				{
+					$start_of_test_case += strlen($this->config->item('test_case_name')); 
+					$end_of_test_case = strpos($line, ")", $start_of_test_case);
+					if($end_of_test_case !== FALSE)
+					{
+						$number_of_test_cases++;
+						$test_case_lenght = $end_of_test_case - $start_of_test_case;
+						$input_file = fopen("$assignment_dir/p$a/in/input".$number_of_test_cases.'.txt', "w");
+						$test_case_name = substr($line,$start_of_test_case ,$test_case_lenght);
+						fwrite($input_file,$test_case_name);
+						$desc_file = fopen("$assignment_dir/p$a/desc/desc".$number_of_test_cases.'.txt', "w");
+						fwrite($desc_file, preg_replace("/_/", " ", preg_replace("/\$/",":",$test_case_name))); 
+					}
+				}
+			}
+		}
+		fclose($file_Test_Case);
+		return $number_of_test_cases;
+	}
 
 	/**
 	 * Add/Edit assignment
@@ -676,7 +737,7 @@ class Assignments extends CI_Controller
 				// Remove previous test cases and descriptions
 				shell_exec("cd $assignment_dir;"
 					." rm -rf */in; rm -rf */out; rm -f */tester.cpp; rm -f */tester.executable;"
-					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf; rm -rf */inject; ");
+					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf; rm -rf */inject; rm -rf */desc");
 				if (glob("$tmp_dir/*.pdf"))
 					shell_exec("cd $assignment_dir; rm -f *.pdf");
 				// Copy new test cases from temp dir
