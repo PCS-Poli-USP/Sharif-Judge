@@ -64,7 +64,7 @@ def checkDuplicateLines(pathCode, logFile, threshold):
     result = os.popen('java -jar simian-2.5.10.jar {0}/*.cpp -threshold={2} &> {1}'\
                       .format(pathCode, outputPath, threshold)).read()
 
-    logFile.write("<span class=\"shj_b\">Duplicated code\n")
+    logFile.write("\n<span class=\"shj_b\">Duplicated code\n")
     numDuplicated = 0
     with open("{0}/.duplicatedLines".format(pathCode), "r") as file:
         for line in file:

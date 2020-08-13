@@ -176,7 +176,7 @@ function shj_finish
 	# Get Current Time (in milliseconds)
 	END=$(($(date +%s%N)/1000000));
 	shj_log "\nTotal Execution Time: $((END-START)) ms"
-	echo $@ 
+	echo $@
 	exit 0
 }
 
@@ -336,7 +336,7 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 		if [ -f "$PROBLEMPATH/$UN/$FILENAME.$compressedext" ]; then
 			7z e "$PROBLEMPATH/$UN/$FILENAME.$compressedext" >/dev/null
 			
-			# Concatenate all *.cpp azipnd *.h files into a single file
+			# Concatenate all *.cpp and *.h files into a single file
 			# This allow file visualization on the web interface
 			for cppfile in `ls 2>/dev/null`; do
 			
@@ -509,6 +509,7 @@ if [ -f "$PROBLEMPATH/tester.executable" ]; then
 	chmod +x shj_tester
 fi
 
+
 PASSEDTESTS=0
 
 for((i=1;i<=TST;i++)); do
@@ -676,7 +677,6 @@ for((i=1;i<=TST;i++)); do
 	fi
 done
 
-
 # Converte resultado para UTF-8 se houver caracteres especiais
 if [ "$(file -ib $PROBLEMPATH/$UN/result.html)" == "text/plain; charset=iso-8859-1" ]; then
   iconv -f ISO-8859-1 -t UTF-8 $PROBLEMPATH/$UN/result.html > $PROBLEMPATH/$UN/result-conv.html
@@ -745,13 +745,24 @@ if $STATIC_ANALYSIS; then
 	shj_log "DUPLICATED_CODE_ERRORS: $DUPLICATED_CODE_ERRORS"
 
 	SUM_SA_WEIGHT=$(( $WEIGHT_PUBLIC_METHODS + $WEIGHT_AUXILIARY_CLASSES + $WEIGHT_UNNECESSARY_ATTRIBUTES + $WEIGHT_LOWER_CAMEL_CASE + $WEIGHT_CODE_QUALITY + $DUPLICATED_CODE ))
+	shj_log "\n $SUM_SA_WEIGHT\n"
 
 	AUX_INDEX=$(( $STATIC_ANALYSIS_WEIGHT/$SUM_SA_WEIGHT ))
+	shj_log "\n $AUX_INDEX\n"
 
 	LOWER_CAMEL_CASE_DISCOUNT=$(( $EACH_LOWER_CAMEL_CASE*$LOWER_CAMEL_CASE_ERRORS*$AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
+	shj_log "\n $EACH_LOWER_CAMEL_CASE\n"
+	shj_log "\n $LOWER_CAMEL_CASE_ERRORS\n"
+	shj_log "\n $WEIGHT_LOWER_CAMEL_CASE\n"
+	shj_log "\n $LOWER_CAMEL_CASE_DISCOUNT\n"
+
+
 	LCC_AUX=$(( ($AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE)-$LOWER_CAMEL_CASE_DISCOUNT ))
+	shj_log "\n $LCC_AUX\n"
+
 	if [$LCC_AUX -le 0]
 	then
+		shj "entrou no if"
 		LOWER_CAMEL_CASE_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
 	fi
 
@@ -789,6 +800,14 @@ if $STATIC_ANALYSIS; then
 		DUPLICATED_CODE_DISCOUNT=$(( $AUX_INDEX*$DUPLICATED_CODE ))
 	fi
 
+	shj_log "\n $LOWER_CAMEL_CASE_DISCOUNT \n"
+	shj_log "\n $PUBLIC_METHODS_DISCOUNT\n"
+	shj_log "\n $UNNECESSARY_ATTRIBUTES_DISCOUNT\n"
+	shj_log "\n $AUXILIARY_CLASSES_DISCOUNT\n"
+	shj_log "\n $CODE_QUALITY_DISCOUNT\n"
+	shj_log "\n $DUPLICATED_CODE_DISCOUNT\n"
+
+
 	TOTAL_STATIC_ANALYSIS_DISCOUNT=$(( $LOWER_CAMEL_CASE_DISCOUNT+$PUBLIC_METHODS_DISCOUNT+$UNNECESSARY_ATTRIBUTES_DISCOUNT+$AUXILIARY_CLASSES_DISCOUNT+$CODE_QUALITY_DISCOUNT+$DUPLICATED_CODE_DISCOUNT ))
 	shj_log "\nTotal StaticAnalysis score discount from 10000: $TOTAL_STATIC_ANALYSIS_DISCOUNT \n"
 
@@ -796,8 +815,6 @@ if $STATIC_ANALYSIS; then
 	
 	cd $JAIL
 	
-
-
 	cd ..
 	rm -r $JAIL >/dev/null 2>/dev/null # removing files
 

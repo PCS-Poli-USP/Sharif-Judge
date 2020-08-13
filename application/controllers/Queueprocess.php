@@ -73,7 +73,7 @@ class Queueprocess extends CI_Controller
 			$userdir = "$problemdir/$username";
 			//$the_file = "$userdir/$raw_filename.$file_extension";
 			$cpp_parser_path = "$tester_path/static_analysis";
-			$staticAnalaysisTemplates = $assignments_dir."/assignment_$assignment/static_analysis_template";
+			$staticAnalaysisTemplates = $assignments_dir."/assignment_$assignment/static_analysis";
 
 			$op1 = $this->settings_model->get_setting('enable_log');
 			$op2 = $this->settings_model->get_setting('enable_easysandbox');
