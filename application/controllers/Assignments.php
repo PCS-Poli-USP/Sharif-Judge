@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Sharif Judge online judge
  * @file Assignments.php
@@ -109,7 +109,8 @@ class Assignments extends CI_Controller
 	/**
 	 * Select assignments of all classes/my classes
 	 */
-	public function selection(){
+	public function selection()
+	{
 
 		if ( $this->user->level == 0) // Estudantes não podem ver esta página.
 			show_404();
@@ -375,11 +376,34 @@ class Assignments extends CI_Controller
 			if ($data['edit_assignment']['id'] === 0)
 				show_404();
 			$data['problems'] = $this->assignment_model->all_problems($this->edit_assignment);
+			$have_sa = 0;
+			foreach ($data['problems'] as $row) {
+				if ($row['static_analysis'] == 1){ 
+					$data['static_analysis'] = $this->assignment_model->static_analysis_info($this->edit_assignment);
+					$have_sa = 1;
+				};
+			};
+			if ($have_sa == 0){
+				$data['static_analysis'] = array(
+					'static_analysis_weight' => 30,
+					'public_methods' => 1,
+					'public_methods_max' => 10,
+					'auxiliary_classes' => 1,
+					'auxiliary_classes_max' => 10,
+					'unnecessary_attributes' => 1,
+					'unnecessary_attributes_max' => 10,
+					'lower_camel_case' => 1,
+					'lower_camel_case_max' => 10,
+					'code_quality' => 1,
+					'code_quality_max' => 10,
+					'duplicated_code' => 1
+				);
+			};
 		}
 		else
 		{
 			$names = $this->input->post('name');
-			if ($names === NULL)
+			if ($names === NULL){
 				$data['problems'] = array(
 					array(
 						'id' => 1,
@@ -390,12 +414,28 @@ class Assignments extends CI_Controller
 						'java_time_limit' => 2000,
 						'memory_limit' => 50000,
 						//'allowed_languages' => 'C,C++,Python 2,Python 3,Java',
-            'allowed_languages' => 'C++',
+            			'allowed_languages' => 'C++',
 						'diff_cmd' => 'diff',
 						'diff_arg' => '-bB',
-						'is_upload_only' => 0
+						'is_upload_only' => 0,
+						'static_analysis' => 0
 					)
 				);
+				$data['static_analysis'] = array(
+						'static_analysis_weight' => 30,
+						'public_methods' => 1,
+						'public_methods_max' => 10,
+						'auxiliary_classes' => 1,
+						'auxiliary_classes_max' => 10,
+						'unnecessary_attributes' => 1,
+						'unnecessary_attributes_max' => 10,
+						'lower_camel_case' => 1,
+						'lower_camel_case_max' => 10,
+						'code_quality' => 1,
+						'code_quality_max' => 10,
+						'duplicated_code' => 1
+				);
+			}
 			else
 			{
 				$names = $this->input->post('name');
@@ -410,8 +450,11 @@ class Assignments extends CI_Controller
 				$weight = $this->input->post('weight');
 				$data['problems'] = array();
 				$uo = $this->input->post('is_upload_only');
+				$sa = $this->input->post('static_analysis');
 				if ($uo === NULL)
 					$uo = array();
+				if ($sa === NULL)
+					$sa = array();
 				for ($i=0; $i<count($names); $i++){
 					array_push($data['problems'], array(
 						'id' => $i+1,
@@ -426,9 +469,26 @@ class Assignments extends CI_Controller
 						'diff_arg' => $da[$i],
 						'is_upload_only' => in_array($i+1,$uo)?1:0,
 						'weight' => $weight[$i],
-					));
-				}
-			}
+						'static_analysis' => in_array($i+1,$sa)?1:0
+						));
+					
+				};
+				$data['static_analysis'] = array(
+					'static_analysis_weight' => $this->input->post('static_analysis_weight'),
+					'public_methods' => $this->input->post('public_methods'),
+					'public_methods_max' => $this->input->post('public_methods_max'),
+					'auxiliary_classes' => $this->input->post('auxiliary_classes'),
+					'auxiliary_classes_max' => $this->input->post('auxiliary_classes_max'),
+					'unnecessary_attributes' => $this->input->post('unnecessary_attributes'),
+					'unnecessary_attributes_max' => $this->input->post('unnecessary_attributes_max'),
+					'lower_camel_case' => $this->input->post('lower_camel_case'),
+					'lower_camel_case_max' => $this->input->post('lower_camel_case_max'),
+					'code_quality' => $this->input->post('code_quality'),
+					'code_quality_max' => $this->input->post('code_quality_max'),
+					'duplicated_code' => $this->input->post('duplicated_code')
+
+				);				
+			}	
 		}
 
 		$this->twig->display('pages/admin/add_assignment.twig', $data);
@@ -437,7 +497,7 @@ class Assignments extends CI_Controller
 
 	// ------------------------------------------------------------------------
 
-	/**
+		/**
 	 * Copying the unit test files to the assignment directory
 	 */
 	private function unittest_add($assignments_root, $assignment_dir, $a)
@@ -498,6 +558,7 @@ class Assignments extends CI_Controller
 		fclose($file_Test_Case);
 		return $number_of_test_cases;
 	}
+
 	/**
 	 * Add/Edit assignment
 	 */
@@ -507,7 +568,8 @@ class Assignments extends CI_Controller
 
 		if ($this->user->level <= 1) // permission denied
 			show_404();
-		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]'); 
+
+		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]');
 		$this->form_validation->set_rules('start_time', 'start time', 'required');
 		$this->form_validation->set_rules('finish_time', 'finish time', 'required');
 		$this->form_validation->set_rules('extra_time', 'extra time', 'required');
@@ -523,10 +585,23 @@ class Assignments extends CI_Controller
 		$this->form_validation->set_rules('diff_cmd[]', 'diff command', 'required');
 		$this->form_validation->set_rules('diff_arg[]', 'diff argument', 'required');
 		$this->form_validation->set_rules('weight[]', 'weight', 'required|integer');
+		$this->form_validation->set_rules('static_analysis_weight', 'The max weight discounted by static analysis errors', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('public_methods', 'Weight discounted by public method', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('public_methods_max', 'Each discount by public methods', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('auxiliary_classes', 'Weight discounted by auxiliary class', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('auxiliary_classes_max', 'Each discount by auxiliary classes', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('unnecessary_attributes', 'Weight discounted by unnecessary attribute', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('unnecessary_attributes_max', 'Each discount by unnecessary attributes', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('lower_camel_case', 'Weight discounted by vars out of lower_camel_case', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('lower_camel_case_max', 'Each discount by vars out of lower_camel_case', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('code_quality', 'Weight discounted by quality code error', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('code_quality_max', 'Each discount by quality code errors', 'required|is_natural|less_than[101]');
+		$this->form_validation->set_rules('duplicated_code', 'Weight discounted when there are more than 9 lines duplicated', 'required|is_natural|less_than[101]');
 
 		$sum = 0;
 		for ($i=0; $i < $this->input->post('number_of_problems'); $i++) {
-			$sum = $sum + $this->input->post('weight')[$i];
+			if (!empty($this->input->post('weight')[$i]))
+				$sum = $sum + $this->input->post('weight')[$i];
 		}
 		if ($sum != 100) {
 			$this->messages[] = array(
@@ -534,7 +609,6 @@ class Assignments extends CI_Controller
 				'text' => 'Error: Sum of weights must be 100. '
 			);
 			return FALSE;
-
 		}
 
 
@@ -652,7 +726,7 @@ class Assignments extends CI_Controller
 
 			// Extract new test cases and descriptions in temp directory
 			$this->load->library('unzip');
-			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf'));
+			$this->unzip->allow(array('txt', 'h', 'hpp', 'cpp', 'html', 'md', 'pdf', 'template'));
 			$extract_result = $this->unzip->extract($u_data['full_path'], $tmp_dir);
 
 			// Remove the zip file
@@ -689,45 +763,23 @@ class Assignments extends CI_Controller
 			// Remove temp directory
 			shell_exec("rm -rf $tmp_dir");
 		}
-		// Create problem directories and parsing markdown file
+
+
+
+		// Create problem directories and parsing markdown files
+
 		for ($i=1; $i <= $this->input->post('number_of_problems'); $i++)
 		{
 			if ( ! file_exists("$assignment_dir/p$i"))
-			{
 				mkdir("$assignment_dir/p$i", 0700);
-			
-			}
-			elseif( ! file_exists("$assignment_dir/p$i/in") and ! file_exists("$assignment_dir/p$i/inject") and ! file_exists("$assignment_dir/p$i/desc")) 
-			{
-				$number_of_test_cases = 0;
-				$problem_files = scandir("$assignment_dir/p$i");
-				$this->dir_creation($assignment_dir,$i);
-				
-				foreach($problem_files as $doc)
-				{
-					if(strpos($doc, ".cpp") !== FALSE) 
-					{
-						$number_of_test_cases = $this->file_adding($assignment_dir,$i,$doc,$number_of_test_cases); 
-					}
-					if(strpos($doc, ".cpp") !== FALSE or strpos($doc, ".txt") !== FALSE or strpos($doc, ".h") !== FALSE or strpos($doc, ".hpp") !== FALSE) // places files on inject folder
-					{
-						rename("$assignment_dir/p$i/$doc" , "$assignment_dir/p$i/inject/$doc");	
-					}
-					
-				}
-				$this->unittest_add($assignments_root, $assignment_dir, $i);				
-				if($number_of_test_cases == 0) 
-				{
-					die("No test cases were uploaded");
-				}
-			}
-			if (file_exists("$assignment_dir/p$i/desc.md"))
+			elseif (file_exists("$assignment_dir/p$i/desc.md"))
 			{
 				$this->load->library('parsedown');
 				$html = $this->parsedown->parse(file_get_contents("$assignment_dir/p$i/desc.md"));
 				file_put_contents("$assignment_dir/p$i/desc.html", $html);
 			}
 		}
+
 		return TRUE;
 	}
 

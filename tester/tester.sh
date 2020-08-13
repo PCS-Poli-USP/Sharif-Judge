@@ -118,6 +118,40 @@ if [ ${17} = "1" ]; then
 else
 	DISPLAY_JAVA_EXCEPTION_ON=false
 fi
+# static analysis script file
+STATIC_ANALYSIS_PATH=${18}
+# enable/disable static analysis
+if [ ${19} = "1" ]; then
+	STATIC_ANALYSIS=true
+else
+	STATIC_ANALYSIS=false
+fi
+# weight public methods error discount
+WEIGHT_PUBLIC_METHODS=${20}
+# each public methods error discount
+EACH_PUBLIC_METHODS=${21}
+# weight auxiliary classes error discount
+WEIGHT_AUXILIARY_CLASSES=${22}
+# each auxiliary classes error discount
+EACH_AUXILIARY_CLASSES=${23}
+# weight unnecessary attributes error discount
+WEIGHT_UNNECESSARY_ATTRIBUTES=${24}
+# each unnecessary attributes error discount
+EACH_UNNECESSARY_ATTRIBUTES=${25}
+# weight lower camel case error discount
+WEIGHT_LOWER_CAMEL_CASE=${26}
+# each lower camel case error discount
+EACH_LOWER_CAMEL_CASE=${27}
+# weight code quality error discount
+WEIGHT_CODE_QUALITY=${28}
+# each code quality error discount
+EACH_CODE_QUALITY=${29}
+# weight duplicated code error discount
+DUPLICATED_CODE=${30}
+# static analysis total weight
+STATIC_ANALYSIS_WEIGHT=${31}
+# static analysis templates to test
+STATIC_ANALYSIS_TEMPLATE=${32}
 
 # DIFFOPTION can also be "ignore" or "exact".
 # ignore: In this case, before diff command, all newlines and whitespaces will be removed from both files
@@ -151,6 +185,8 @@ function shj_finish
 #################### Initialization #####################
 
 shj_log "Starting tester..."
+
+shj_log "Static Analysis: $STATIC_ANALYSIS"
 
 # detecting existence of perl
 PERL_EXISTS=true
@@ -315,12 +351,12 @@ if [ "$EXT" = "c" ] || [ "$EXT" = "cpp" ]; then
 				echo "==============================================================================="
 				echo ""
         
-        if [ "$(file -ib $cppfile)" == "text/x-c; charset=iso-8859-1" ]; then
-          # Converte o programa para UTF-8 se houver caracteres especiais
-          iconv -f ISO-8859-1 -t UTF-8 $cppfile
-        else
-          cat $cppfile
-        fi
+				if [ "$(file -ib $cppfile)" == "text/x-c; charset=iso-8859-1" ]; then
+				# Converte o programa para UTF-8 se houver caracteres especiais
+				iconv -f ISO-8859-1 -t UTF-8 $cppfile
+				else
+				cat $cppfile
+				fi
         
 				echo ""
 				echo ""
@@ -664,11 +700,135 @@ fi
 	#fi
 
 
+if $STATIC_ANALYSIS; then
+	cd ..
+	TESTER_PATH=$(pwd)
+	cd $STATIC_ANALYSIS_PATH
+	shj_log "\n=== STATIC ANALYSIS TEST ==="
+	python3 CppParser.py $TESTER_PATH/$JAIL $STATIC_ANALYSIS_TEMPLATE . 
+	STATIC_ANALYSIS_ERRORS=$(cat static-errors)
+	
+	echo "$(cat static-result.html)" >>$PROBLEMPATH/$UN/result.html
+	
+	ERROR_COUNT=0
+	ERROR_STEP=1
+	while IFS=',' read -ra ERROR; do
+		for i in "${ERROR[@]}"; do
+			case $ERROR_COUNT in
+				0)LOWER_CAMEL_CASE_ERRORS=$i
+				;;
+				1)PUBLIC_METHODS_ERRORS=$i
+				;;
+				2)UNNECESSARY_ATTRIBUTES_ERRORS=$i
+				;;
+				3)UNUSED_VARS_ERRORS=$i
+				;;
+				4)AUXILIARY_CLASSES_ERRORS=$i
+				;;
+				5)CODE_QUALITY_ERRORS=$i
+				;;
+				6)DUPLICATED_CODE_ERRORS=$i
+				;;
+				*)
+				;;
+			esac
+			ERROR_COUNT=$(( $ERROR_COUNT + $ERROR_STEP))
+		done
+	done <<< "$STATIC_ANALYSIS_ERRORS"
 
-cd ..
-rm -r $JAIL >/dev/null 2>/dev/null # removing files
+	shj_log "LOWER_CAMEL_CASE_ERRORS: $LOWER_CAMEL_CASE_ERRORS"
+	shj_log "PUBLIC_METHODS_ERRORS: $PUBLIC_METHODS_ERRORS"
+	shj_log "UNNECESSARY_ATTRIBUTES_ERRORS: $UNNECESSARY_ATTRIBUTES_ERRORS"
+	shj_log "UNUSED_VARS_ERRORS: $UNUSED_VARS_ERRORS"
+	shj_log "AUXILIARY_CLASSES_ERRORS: $AUXILIARY_CLASSES_ERRORS"
+	shj_log "CODE_QUALITY_ERRORS: $CODE_QUALITY_ERRORS"
+	shj_log "DUPLICATED_CODE_ERRORS: $DUPLICATED_CODE_ERRORS"
 
-((SCORE=PASSEDTESTS*10000/TST)) # give score from 10,000
-shj_log "\nScore from 10000: $SCORE"
+	SUM_SA_WEIGHT=$(( $WEIGHT_PUBLIC_METHODS + $WEIGHT_AUXILIARY_CLASSES + $WEIGHT_UNNECESSARY_ATTRIBUTES + $WEIGHT_LOWER_CAMEL_CASE + $WEIGHT_CODE_QUALITY + $DUPLICATED_CODE ))
+	shj_log "\n $SUM_SA_WEIGHT\n"
 
-shj_finish $SCORE
+	AUX_INDEX=$(( $STATIC_ANALYSIS_WEIGHT/$SUM_SA_WEIGHT ))
+	shj_log "\n $AUX_INDEX\n"
+
+	LOWER_CAMEL_CASE_DISCOUNT=$(( $EACH_LOWER_CAMEL_CASE*$LOWER_CAMEL_CASE_ERRORS*$AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
+	shj_log "\n $EACH_LOWER_CAMEL_CASE\n"
+	shj_log "\n $LOWER_CAMEL_CASE_ERRORS\n"
+	shj_log "\n $WEIGHT_LOWER_CAMEL_CASE\n"
+	shj_log "\n $LOWER_CAMEL_CASE_DISCOUNT\n"
+
+
+	LCC_AUX=$(( ($AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE)-$LOWER_CAMEL_CASE_DISCOUNT ))
+	shj_log "\n $LCC_AUX\n"
+
+	if [$LCC_AUX -le 0]
+	then
+		shj "entrou no if"
+		LOWER_CAMEL_CASE_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_LOWER_CAMEL_CASE ))
+	fi
+
+	PUBLIC_METHODS_DISCOUNT=$(( $EACH_PUBLIC_METHODS*$PUBLIC_METHODS_ERRORS*$AUX_INDEX*$WEIGHT_PUBLIC_METHODS ))
+	PM_AUX=$(( ($AUX_INDEX*$WEIGHT_PUBLIC_METHODS)-$PUBLIC_METHODS_DISCOUNT ))
+	if [$PM_AUX -le 0]
+	then
+		PUBLIC_METHODS_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_PUBLIC_METHODS ))
+	fi
+
+	UNNECESSARY_ATTRIBUTES_DISCOUNT=$(( $EACH_UNNECESSARY_ATTRIBUTES*$UNNECESSARY_ATTRIBUTES_ERRORS*$AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES ))
+	UA_AUX=$(( ($AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES)-$UNNECESSARY_ATTRIBUTES_DISCOUNT ))
+	if [$UA_AUX -le 0]
+	then
+		UNNECESSARY_ATTRIBUTES_DISCOUNT=$((  $AUX_INDEX*$WEIGHT_UNNECESSARY_ATTRIBUTES ))
+	fi
+
+	AUXILIARY_CLASSES_DISCOUNT=$(( $EACH_AUXILIARY_CLASSES*$AUXILIARY_CLASSES_ERRORS*$AUX_INDEX*$WEIGHT_AUXILIARY_CLASSES ))
+	AC_AUX=$(( ($AUX_INDEX*$WEIGHT_AUXILIARY_CLASSES)-$AUXILIARY_CLASSES_DISCOUNT ))
+	if [$AC_AUX -le 0]
+	then
+		AUXILIARY_CLASSES_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_AUXILIARY_CLASSEST ))
+	fi
+
+	CODE_QUALITY_DISCOUNT=$(( $EACH_CODE_QUALITY*$CODE_QUALITY_ERRORS*$AUX_INDEX*$WEIGHT_CODE_QUALITY ))
+	CQ_AUX=$(( ($AUX_INDEX*$WEIGHT_CODE_QUALITY)-$CODE_QUALITY_DISCOUNT ))
+	if [$CQ_AUX -le 0]
+	then
+		CODE_QUALITY_DISCOUNT=$(( $AUX_INDEX*$WEIGHT_CODE_QUALITY ))
+	fi
+	
+	DUPLICATED_CODE_DISCOUNT=0
+	if [$DUPLICATED_CODE_ERRORS -ge 9]
+	then
+		DUPLICATED_CODE_DISCOUNT=$(( $AUX_INDEX*$DUPLICATED_CODE ))
+	fi
+
+	shj_log "\n $LOWER_CAMEL_CASE_DISCOUNT \n"
+	shj_log "\n $PUBLIC_METHODS_DISCOUNT\n"
+	shj_log "\n $UNNECESSARY_ATTRIBUTES_DISCOUNT\n"
+	shj_log "\n $AUXILIARY_CLASSES_DISCOUNT\n"
+	shj_log "\n $CODE_QUALITY_DISCOUNT\n"
+	shj_log "\n $DUPLICATED_CODE_DISCOUNT\n"
+
+
+	TOTAL_STATIC_ANALYSIS_DISCOUNT=$(( $LOWER_CAMEL_CASE_DISCOUNT+$PUBLIC_METHODS_DISCOUNT+$UNNECESSARY_ATTRIBUTES_DISCOUNT+$AUXILIARY_CLASSES_DISCOUNT+$CODE_QUALITY_DISCOUNT+$DUPLICATED_CODE_DISCOUNT ))
+	shj_log "\nTotal StaticAnalysis score discount from 10000: $TOTAL_STATIC_ANALYSIS_DISCOUNT \n"
+
+	mv static-* $PROBLEMPATH/$UN
+	
+	cd $JAIL
+	
+	cd ..
+	rm -r $JAIL >/dev/null 2>/dev/null # removing files
+
+	((SCORE=(PASSEDTESTS*10000/TST)-TOTAL_STATIC_ANALYSIS_DISCOUNT)) # give score from 10,000 and discount static analysis
+	shj_log "\nScore from 10000 with static analysis: $SCORE"
+
+	shj_finish $SCORE
+else 	
+	cd ..
+	rm -r $JAIL >/dev/null 2>/dev/null # removing files
+
+	shj_log "\n=== NO STATIC ANALYSIS TEST ===\n"
+	((SCORE=PASSEDTESTS*10000/TST)) # give score from 10,000
+	shj_log "\nScore from 10000: $SCORE"
+
+	shj_finish $SCORE
+fi

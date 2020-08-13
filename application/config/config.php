@@ -459,11 +459,20 @@ $config['composer_autoload'] = TRUE;
 | test case names when a "unit test" case assignment is added
 |
 */
-
 $config['unit_test_folder'] = 'unittest';
 
 $config['test_case_name'] = 'TEST_CASE (';
 
+/*
+|--------------------------------------------------------------------------
+| Static Analysis Configuration
+|--------------------------------------------------------------------------
+|
+| Setup of the path to the static alanysis test folder and to the reference of the 
+| test case names when a "static_analysis" case problem is added
+|
+*/
+$config['static_analysis_templates_folder'] = 'static_analysis_template';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

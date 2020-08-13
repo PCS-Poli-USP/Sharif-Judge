@@ -85,6 +85,9 @@ class Assignment_model extends CI_Model
 
 		/* **** Adding problems to "problems" table **** */
 
+		//And remove all previous static analysis too
+		$this->db->delete('static_analysis', array('assignment'=>$id));
+
 		//First remove all previous problems
 		$this->db->delete('problems', array('assignment'=>$id));
 
@@ -99,9 +102,12 @@ class Assignment_model extends CI_Model
 		$dc = $this->input->post('diff_cmd');
 		$da = $this->input->post('diff_arg');
 		$uo = $this->input->post('is_upload_only');
+		$sa = $this->input->post('static_analysis');
 		$weight = $this->input->post('weight');
 		if ($uo === NULL)
 			$uo = array();
+		if ($sa === NULL)
+			$sa = array();
 		for ($i=1; $i<=$this->input->post('number_of_problems'); $i++)
 		{
 			$items = explode(',', $ft[$i-1]);
@@ -138,11 +144,35 @@ class Assignment_model extends CI_Model
 				'allowed_languages' => $ft[$i-1],
 				'diff_cmd' => $dc[$i-1],
 				'diff_arg' => $da[$i-1],
-				'weight'   => $weight[$i-1]
+				'weight'   => $weight[$i-1],
+				'static_analysis' => in_array($i,$sa)?1:0
 			);
 			$this->db->insert('problems', $problem);
+			
+			/* **** Adding static analysis to "static_analysis" table **** */
+			if (in_array($i,$sa)){
+				//Now add new static analysis:
+				$static_analysis = array(
+					'assignment' => $id,
+					'problem' => $i,
+					'public_methods' => $this->input->post('public_methods'),
+					'public_methods_max' => $this->input->post('public_methods_max'),
+					'auxiliary_classes' => $this->input->post('auxiliary_classes'),
+					'auxiliary_classes_max' => $this->input->post('auxiliary_classes_max'),
+					'unnecessary_attributes' => $this->input->post('unnecessary_attributes'),
+					'unnecessary_attributes_max' => $this->input->post('unnecessary_attributes_max'),
+					'lower_camel_case' => $this->input->post('lower_camel_case'),
+					'lower_camel_case_max' => $this->input->post('lower_camel_case_max'),
+					'code_quality' => $this->input->post('code_quality'),
+					'code_quality_max' => $this->input->post('code_quality_max'),
+					'duplicated_code' => $this->input->post('duplicated_code'),
+					'static_analysis_weight' => $this->input->post('static_analysis_weight')
+				);
+				$this->db->insert('static_analysis', $static_analysis);
+			};
 		}
 
+		
 		if ($edit)
 		{
 			// We must update scoreboard of the assignment
@@ -175,6 +205,7 @@ class Assignment_model extends CI_Model
 		$this->db->delete('assignments', array('id'=>$assignment_id));
 		$this->db->delete('problems', array('assignment'=>$assignment_id));
 		$this->db->delete('submissions', array('assignment'=>$assignment_id));
+		$this->db->delete('static_analysis', array('assignment'=>$assignment_id));
 
 		$this->db->trans_complete();
 
@@ -315,6 +346,26 @@ class Assignment_model extends CI_Model
 		foreach ($result as $row)
 			$problems[$row['id']] = $row;
 		return $problems;
+	}
+
+
+
+	// ------------------------------------------------------------------------
+
+
+
+	/**
+	 * Static Analysis of an Assignment
+	 *
+	 * Returns an array containing static anaysis of given assignment
+	 *
+	 * @param $assignment_id
+	 * @return mixed
+	 */
+	public function static_analysis_info($assignment_id)
+	{
+		$static_analysis = $this->db->order_by('assignment')->get_where('static_analysis', array('assignment'=>$assignment_id))->result_array();
+		return $static_analysis[0];
 	}
 
 

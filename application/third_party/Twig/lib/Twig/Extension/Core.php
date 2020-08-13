@@ -1191,9 +1191,10 @@ if (function_exists('mb_get_info')) {
      *
      * @return integer The length of the value
      */
-    function twig_length_filter(Twig_Environment $env, $thing)
+    function twig_length_filter(Twig_Environment $env, $thing) 
     {
-        return is_scalar($thing) ? mb_strlen($thing, $env->getCharset()) : count($thing);
+        $pkCount = (is_array($thing) ? count($thing) : 0);
+        return is_scalar($thing) ? mb_strlen($thing, $env->getCharset()) : $pkCount;
     }
 
     /**
@@ -1277,7 +1278,8 @@ else {
      */
     function twig_length_filter(Twig_Environment $env, $thing)
     {
-        return is_scalar($thing) ? strlen($thing) : count($thing);
+        $pkCount = (is_array($thing) ? count($thing) : 0);
+        return is_scalar($thing) ? strlen($thing) : $pkCount;
     }
 
     /**
