@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Sharif Judge online judge
  * @file Assignments.php
@@ -437,7 +437,67 @@ class Assignments extends CI_Controller
 
 	// ------------------------------------------------------------------------
 
+	/**
+	 * Copying the unit test files to the assignment directory
+	 */
+	private function unittest_add($assignments_root, $assignment_dir, $a)
+	{
+		$unit_test_folder = $this->config->item('unit_test_folder');
+		$inject_files = scandir("$assignments_root/$unit_test_folder");	
+		foreach ($inject_files as $inject_file)
+		{
+			if(strpos($inject_file, "tester.cpp") !== FALSE)
+			{
+				copy("$assignments_root/$unit_test_folder/$inject_file", "$assignment_dir/p$a/$inject_file");
+			}
+			elseif(strpos($inject_file, ".cpp") !== FALSE or strpos($inject_file, ".h") !== FALSE)
+			{
+				copy("$assignments_root/$unit_test_folder/$inject_file", "$assignment_dir/p$a/inject/$inject_file");
+			}
+		}
+	}
 
+	/**
+	 * Creation of the directory folders in unittestcase
+	 */
+	private function dir_creation($assignment_dir,$a)
+	{
+		mkdir("$assignment_dir/p$a/desc", 0700);
+		mkdir("$assignment_dir/p$a/in", 0700);
+		mkdir("$assignment_dir/p$a/inject", 0700);
+	}
+
+	/**
+	 * Creation of assingments files for unit tes
+	 */
+	private function file_adding($assignment_dir,$a,$doc, &$number_of_test_cases)
+	{
+		if($file_Test_Case = fopen("$assignment_dir/p$a/$doc", "r") or die ("Unable to open file"))
+		{
+			while(! feof($file_Test_Case))
+			{
+				$line = fgets($file_Test_Case);     
+				$start_of_test_case = strpos($line , $this->config->item('test_case_name'));
+				if ($start_of_test_case !== FALSE)
+				{
+					$start_of_test_case += strlen($this->config->item('test_case_name')); 
+					$end_of_test_case = strpos($line, ")", $start_of_test_case);
+					if($end_of_test_case !== FALSE)
+					{
+						$number_of_test_cases++;
+						$test_case_lenght = $end_of_test_case - $start_of_test_case;
+						$input_file = fopen("$assignment_dir/p$a/in/input".$number_of_test_cases.'.txt', "w");
+						$test_case_name = substr($line,$start_of_test_case ,$test_case_lenght);
+						fwrite($input_file,$test_case_name);
+						$desc_file = fopen("$assignment_dir/p$a/desc/desc".$number_of_test_cases.'.txt', "w");
+						fwrite($desc_file, preg_replace("/_/", " ", preg_replace("/\$/",":",$test_case_name))); 
+					}
+				}
+			}
+		}
+		fclose($file_Test_Case);
+		return $number_of_test_cases;
+	}
 	/**
 	 * Add/Edit assignment
 	 */
@@ -447,8 +507,7 @@ class Assignments extends CI_Controller
 
 		if ($this->user->level <= 1) // permission denied
 			show_404();
-
-		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]');
+		$this->form_validation->set_rules('assignment_name', 'assignment name', 'required|max_length[50]'); 
 		$this->form_validation->set_rules('start_time', 'start time', 'required');
 		$this->form_validation->set_rules('finish_time', 'finish time', 'required');
 		$this->form_validation->set_rules('extra_time', 'extra time', 'required');
@@ -604,7 +663,7 @@ class Assignments extends CI_Controller
 				// Remove previous test cases and descriptions
 				shell_exec("cd $assignment_dir;"
 					." rm -rf */in; rm -rf */out; rm -f */tester.cpp; rm -f */tester.executable;"
-					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf; rm -rf */inject; ");
+					." rm -f */desc.html; rm -f */desc.md; rm -f */*.pdf; rm -rf */inject; rm -rf */desc");
 				if (glob("$tmp_dir/*.pdf"))
 					shell_exec("cd $assignment_dir; rm -f *.pdf");
 				// Copy new test cases from temp dir
@@ -630,23 +689,45 @@ class Assignments extends CI_Controller
 			// Remove temp directory
 			shell_exec("rm -rf $tmp_dir");
 		}
-
-
-
-		// Create problem directories and parsing markdown files
-
+		// Create problem directories and parsing markdown file
 		for ($i=1; $i <= $this->input->post('number_of_problems'); $i++)
 		{
 			if ( ! file_exists("$assignment_dir/p$i"))
+			{
 				mkdir("$assignment_dir/p$i", 0700);
-			elseif (file_exists("$assignment_dir/p$i/desc.md"))
+			
+			}
+			elseif( ! file_exists("$assignment_dir/p$i/in") and ! file_exists("$assignment_dir/p$i/inject") and ! file_exists("$assignment_dir/p$i/desc")) 
+			{
+				$number_of_test_cases = 0;
+				$problem_files = scandir("$assignment_dir/p$i");
+				$this->dir_creation($assignment_dir,$i);
+				
+				foreach($problem_files as $doc)
+				{
+					if(strpos($doc, ".cpp") !== FALSE) 
+					{
+						$number_of_test_cases = $this->file_adding($assignment_dir,$i,$doc,$number_of_test_cases); 
+					}
+					if(strpos($doc, ".cpp") !== FALSE or strpos($doc, ".txt") !== FALSE or strpos($doc, ".h") !== FALSE or strpos($doc, ".hpp") !== FALSE) // places files on inject folder
+					{
+						rename("$assignment_dir/p$i/$doc" , "$assignment_dir/p$i/inject/$doc");	
+					}
+					
+				}
+				$this->unittest_add($assignments_root, $assignment_dir, $i);				
+				if($number_of_test_cases == 0) 
+				{
+					die("No test cases were uploaded");
+				}
+			}
+			if (file_exists("$assignment_dir/p$i/desc.md"))
 			{
 				$this->load->library('parsedown');
 				$html = $this->parsedown->parse(file_get_contents("$assignment_dir/p$i/desc.md"));
 				file_put_contents("$assignment_dir/p$i/desc.html", $html);
 			}
 		}
-
 		return TRUE;
 	}
 

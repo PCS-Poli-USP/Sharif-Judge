@@ -28,7 +28,7 @@
 	<td><input type="text" name="python_time_limit[]" class="sharif_input tiny2" value="1500"/></td>\
 	<td><input type="text" name="java_time_limit[]" class="sharif_input tiny2" value="2000"/></td>\
 	<td><input type="text" name="memory_limit[]" class="sharif_input tiny" value="50000"/></td>\
-	<td><input type="text" name="weight[]" class="sharif_input tiny" value="1"/></td>\
+	<td><input type="text" name="weight[]" class="sharif_input tiny" value="1"></td>\
 	<td><input type="text" name="languages[]" class="sharif_input short2" value="C++"/></td>\
 	<td><input type="text" name="diff_cmd[]" class="sharif_input tiny" value="diff"/></td>\
 	<td><input type="text" name="diff_arg[]" class="sharif_input tiny" value="-bB"/></td>\
@@ -93,7 +93,6 @@
 	<i class="fa fa-info-circle fa-lg color8"></i> If you don't want to change tests or pdf file, just do not upload its file.
 </p>
 {% endif %}
-
 {{ form_open_multipart(edit ? 'assignments/edit/'~edit_assignment.id : 'assignments/add') }}
 <div class="panel_left">
 	<input type="hidden" name="number_of_problems" id="nop" value="{{ edit ? edit_assignment.problems : problems|length }}"/>
@@ -104,7 +103,7 @@
 	</p>
 	<p class="input_p">
 		<label for="start_time">Start Time</label>
-		<input id="start_time" type="text" name="start_time" class="sharif_input medium" value="{{ edit ? edit_assignment.start_time|date('m/d/Y H:i:s') : set_value('start_time') }}" />
+		<input id="start_time" type="text" name="start_time" class="sharif_input medium" value="{{ edit ? edit_assignment.start_time|date('m/d/Y H:i:s') : set_value('start_time' )}}" />
 		{{ form_error('start_time', '<div class="shj_error">', '</div>') }}
 	</p>
 	<p class="input_p">
@@ -117,7 +116,7 @@
 			Extra Time (minutes)<br>
 			<span class="form_comment">Extra time for late submissions.</span>
 		</label>
-		<input id="form_extra_time" type="text" name="extra_time" id="extra_time" class="sharif_input medium" value="{{ edit ? edit_assignment.extra_time|extra_time_formatter : set_value('extra_time') }}" />
+		<input id="form_extra_time" type="text" name="extra_time" id="extra_time" class="sharif_input medium" value="{{ edit ? edit_assignment.extra_time|extra_time_formatter : set_value('extra_time', 0) }}" />
 		{{ form_error('extra_time', '<div class="shj_error">', '</div>') }}
 	</p>
 	<p class="input_p clear">
@@ -214,7 +213,7 @@
 			<td><input type="text" name="python_time_limit[]" class="sharif_input tiny2" value="{{ problem.python_time_limit }}"/></td>
 			<td><input type="text" name="java_time_limit[]" class="sharif_input tiny2" value="{{ problem.java_time_limit }}"/></td>
 			<td><input type="text" name="memory_limit[]" class="sharif_input tiny" value="{{ problem.memory_limit }}"/></td>
-			<td><input type="text" name="weight[]" class="sharif_input tiny" value="{{ problem.weight }}"/></td>
+			<td><input type="text" name="weight[]" class="sharif_input tiny" value= "{{ problem.weight}}"/></td>
 			<td><input type="text" name="languages[]" class="sharif_input short2" value="{{ problem.allowed_languages }}"/></td>
 			<td><input type="text" name="diff_cmd[]" class="sharif_input tiny" value="{{ problem.diff_cmd }}"/></td>
 			<td><input type="text" name="diff_arg[]" class="sharif_input tiny" value="{{ problem.diff_arg }}"/></td>
