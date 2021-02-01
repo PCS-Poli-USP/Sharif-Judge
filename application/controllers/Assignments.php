@@ -771,8 +771,35 @@ class Assignments extends CI_Controller
 		for ($i=1; $i <= $this->input->post('number_of_problems'); $i++)
 		{
 			if ( ! file_exists("$assignment_dir/p$i"))
+			{
 				mkdir("$assignment_dir/p$i", 0700);
-			elseif (file_exists("$assignment_dir/p$i/desc.md"))
+
+			}
+			elseif( ! file_exists("$assignment_dir/p$i/in") and ! file_exists("$assignment_dir/p$i/inject") and ! file_exists("$assignment_dir/p$i/desc")) 
+			{
+				$number_of_test_cases = 0;
+				$problem_files = scandir("$assignment_dir/p$i");
+				$this->dir_creation($assignment_dir,$i);
+
+				foreach($problem_files as $doc)
+				{
+					if(strpos($doc, ".cpp") !== FALSE) 
+					{
+						$number_of_test_cases = $this->file_adding($assignment_dir,$i,$doc,$number_of_test_cases); 
+					}
+					if(strpos($doc, ".cpp") !== FALSE or strpos($doc, ".txt") !== FALSE or strpos($doc, ".h") !== FALSE or strpos($doc, ".hpp") !== FALSE) // places files on inject folder
+					{
+						rename("$assignment_dir/p$i/$doc" , "$assignment_dir/p$i/inject/$doc");	
+					}
+
+				}
+				$this->unittest_add($assignments_root, $assignment_dir, $i);				
+				if($number_of_test_cases == 0) 
+				{
+					die("No test cases were uploaded");
+				}
+			}
+			if (file_exists("$assignment_dir/p$i/desc.md"))
 			{
 				$this->load->library('parsedown');
 				$html = $this->parsedown->parse(file_get_contents("$assignment_dir/p$i/desc.md"));
